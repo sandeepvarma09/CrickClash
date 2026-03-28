@@ -19,15 +19,15 @@ const connectDB = async () => {
   }
 };
 
-// ─── Route Imports (Relative to root) ──────────────────────────────────────────
-import matchRoutes from '../server/src/routes/matchRoutes';
-import challengeRoutes from '../server/src/routes/challengeRoutes';
-import predictionRoutes from '../server/src/routes/predictionRoutes';
-import leaderboardRoutes from '../server/src/routes/leaderboardRoutes';
-import userRoutes from '../server/src/routes/userRoutes';
-import adminRoutes from '../server/src/routes/adminRoutes';
-import { errorHandler } from '../server/src/middleware/errorHandler';
-import { generalLimiter } from '../server/src/middleware/rateLimiter';
+// ─── Route Imports (Relative to current api directory) ───────────────────────
+import matchRoutes from './src/routes/matchRoutes';
+import challengeRoutes from './src/routes/challengeRoutes';
+import predictionRoutes from './src/routes/predictionRoutes';
+import leaderboardRoutes from './src/routes/leaderboardRoutes';
+import userRoutes from './src/routes/userRoutes';
+import adminRoutes from './src/routes/adminRoutes';
+import { errorHandler } from './src/middleware/errorHandler';
+import { generalLimiter } from './src/middleware/rateLimiter';
 
 const app: Application = express();
 
