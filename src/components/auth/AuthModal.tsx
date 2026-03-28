@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { gsap } from '@/lib/gsap';
 
@@ -25,7 +26,11 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
   useEffect(() => {
     if (isOpen) {
       gsap.fromTo(backdropRef.current, { opacity: 0 }, { opacity: 1, duration: 0.3 });
-      gsap.fromTo(modalRef.current, { opacity: 0, scale: 0.9, y: 20 }, { opacity: 1, scale: 1, y: 0, duration: 0.4, ease: 'back.out(1.7)' });
+      // Remove overshoot 'back.out' for stability
+      gsap.fromTo(modalRef.current, 
+        { opacity: 0, scale: 0.95, y: 10 }, 
+        { opacity: 1, scale: 1, y: 0, duration: 0.3, ease: 'power2.out' }
+      );
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto';
@@ -45,7 +50,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
         await register(formData.username, formData.email, formData.password);
       }
       onClose();
-      window.location.reload(); // Refresh to check notifications
+      window.location.reload(); 
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -55,102 +60,99 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
 
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      {/* Backdrop */}
-      <div 
-        ref={backdropRef}
-        onClick={onClose}
-        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
-      />
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 sm:p-4 bg-black/90 backdrop-blur-md">
+      {/* Backdrop Trigger */}
+      <div onClick={onClose} className="absolute inset-0 cursor-default" />
 
-      {/* Modal Content */}
+      {/* Modal Content - SOLID BACKGROUND FOR READABILITY */}
       <div 
         ref={modalRef}
-        className="relative w-full max-w-md card-glass p-8 shadow-2xl border-white/10 overflow-hidden"
+        className="relative w-full max-w-md bg-[#0f111a] border border-slate-700/50 rounded-[2rem] p-8 sm:p-10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.8)] overflow-y-auto max-h-[90vh]"
       >
-        {/* Glow effect */}
-        <div className="absolute -top-24 -right-24 w-48 h-48 bg-orange-500/20 rounded-full blur-3xl pointer-events-none" />
+        {/* Subtle accent glow */}
+        <div className="absolute -top-32 -right-32 w-64 h-64 bg-orange-500/10 rounded-full blur-[100px] pointer-events-none" />
         
-        <div className="relative z-10 text-center mb-8">
-          <h2 className="text-3xl font-black text-white mb-2" style={{ fontFamily: 'var(--font-display)' }}>
+        <div className="relative z-10 text-center mb-10">
+          <h2 className="text-3xl font-black text-white mb-3" style={{ fontFamily: 'var(--font-display)' }}>
             {isLogin ? 'Welcome Back' : 'Join the Clash'}
           </h2>
-          <p className="text-slate-400 text-sm">
-            {isLogin ? 'Login to continue your winning streak' : 'Create an account to start predicting'}
+          <p className="text-slate-400 text-sm leading-relaxed">
+            {isLogin ? 'Enter your details to access your dashboard' : 'Create an account to start your winning streak'}
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="relative z-10 space-y-4">
+        <form onSubmit={handleSubmit} className="relative z-10 space-y-5">
           {!isLogin && (
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Username</label>
+            <div className="space-y-2">
+              <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500 ml-1">Username</label>
               <input 
                 type="text" 
-                placeholder="cricketer_pro"
+                placeholder="pick a username"
                 required
-                className="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500/50 transition-all"
+                className="w-full bg-slate-900/50 border border-slate-800 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20 transition-all placeholder:text-slate-600"
                 value={formData.username}
                 onChange={e => setFormData({ ...formData, username: e.target.value })}
               />
             </div>
           )}
 
-          <div className="space-y-1.5">
-            <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Email Address</label>
+          <div className="space-y-2">
+            <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500 ml-1">Email Address</label>
             <input 
               type="email" 
               placeholder="name@example.com"
               required
-              className="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500/50 transition-all"
+              className="w-full bg-slate-900/50 border border-slate-800 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20 transition-all placeholder:text-slate-600"
               value={formData.email}
               onChange={e => setFormData({ ...formData, email: e.target.value })}
             />
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Password</label>
+          <div className="space-y-2">
+            <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500 ml-1">Password</label>
             <input 
               type="password" 
               placeholder="••••••••"
               required
               minLength={6}
-              className="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500/50 transition-all"
+              className="w-full bg-slate-900/50 border border-slate-800 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20 transition-all"
               value={formData.password}
               onChange={e => setFormData({ ...formData, password: e.target.value })}
             />
           </div>
 
           {error && (
-            <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold animate-shake">
-              ⚠️ {error}
+            <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-bold flex items-center gap-2">
+              <span>⚠️</span>
+              <span>{error}</span>
             </div>
           )}
 
           <button 
             type="submit" 
             disabled={loading}
-            className="btn-primary w-full py-4 text-sm font-bold mt-4 shadow-orange-500/10 shadow-lg active:scale-95 disabled:opacity-50 disabled:active:scale-100"
+            className="btn-primary w-full py-4 rounded-2xl text-base font-black mt-6 shadow-xl shadow-orange-500/10 active:scale-[0.98] disabled:opacity-50 transition-transform"
           >
             {loading ? (
-              <div className="flex items-center justify-center gap-2">
-                <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                <span>Processing...</span>
+              <div className="flex items-center justify-center gap-3">
+                <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                <span>Authenticating...</span>
               </div>
             ) : (
-              isLogin ? 'Login to Account' : 'Create My Account'
+              isLogin ? 'Login' : 'Create Account'
             )}
           </button>
         </form>
 
-        <div className="relative z-10 mt-8 pt-6 border-t border-white/5 text-center">
-          <p className="text-slate-500 text-xs font-medium">
-            {isLogin ? "Don't have an account?" : "Already playing?"}
+        <div className="relative z-10 mt-10 pt-8 border-t border-white/5 text-center">
+          <p className="text-slate-500 text-sm font-medium">
+            {isLogin ? "New to CricClash?" : "Already a member?"}
             <button 
               onClick={() => setIsLogin(!isLogin)}
-              className="ml-2 text-orange-400 font-bold hover:text-orange-300 transition-colors"
+              className="ml-2 text-orange-400 font-black hover:text-orange-300 transition-colors"
             >
-              {isLogin ? 'Sign up for free' : 'Log in here'}
+              {isLogin ? 'Join for free' : 'Log in instead'}
             </button>
           </p>
         </div>
@@ -158,11 +160,14 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
         {/* Close Button */}
         <button 
           onClick={onClose}
-          className="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors p-2"
+          className="absolute top-6 right-6 text-slate-600 hover:text-white transition-colors p-2"
         >
-          ✕
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
         </button>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
