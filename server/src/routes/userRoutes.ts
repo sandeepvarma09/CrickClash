@@ -120,7 +120,10 @@ router.get('/:username/notifications/latest', asyncHandler(async (req, res) => {
     })
     .lean();
 
-  if (!latestResult) return sendSuccess(res, null, 'No recent results');
+  if (!latestResult) {
+    sendSuccess(res, null, 'No recent results');
+    return;
+  }
 
   // Also find the winner and loser scores
   const challengeId = latestResult.challengeId._id;

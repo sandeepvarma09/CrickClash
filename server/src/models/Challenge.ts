@@ -114,19 +114,19 @@ challengeSchema.methods.addParticipant = async function (
 ): Promise<IChallenge> {
   if (!this.hasParticipant(userId)) {
     this.participants.push({ userId, joinedAt: new Date() });
-    return this.save();
+    return this.save() as unknown as IChallenge;
   }
-  return this;
+  return this as unknown as IChallenge;
 };
 
 challengeSchema.methods.lock = async function (): Promise<IChallenge> {
   this.status = 'locked';
-  return this.save();
+  return this.save() as unknown as IChallenge;
 };
 
 challengeSchema.methods.complete = async function (): Promise<IChallenge> {
   this.status = 'completed';
-  return this.save();
+  return this.save() as unknown as IChallenge;
 };
 
 // ─── Export ────────────────────────────────────────────────────────────────────

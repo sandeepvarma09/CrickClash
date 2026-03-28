@@ -116,7 +116,7 @@ userSchema.methods.addBadge = async function (badge: BadgeType): Promise<IUser> 
     this.badges.push(badge);
     return this.save() as unknown as Promise<IUser>;
   }
-  return this;
+  return this as unknown as Promise<IUser>;
 };
 
 // ─── Export ────────────────────────────────────────────────────────────────────
