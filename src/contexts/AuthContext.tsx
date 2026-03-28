@@ -1,0 +1,86 @@
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import axios from 'axios';
+import { API_BASE_URL } from '@/config/api';
+
+interface User {
+  username: string;
+  email: string;
+  isAdmin: boolean;
+}
+
+interface AuthContextType {
+  user: User | null;
+  loading: boolean;
+  login: (email: string, password: string) => Promise<void>;
+  register: (username: string, email: string, password: string) => Promise<void>;
+  logout: () => void;
+  isAuthenticated: boolean;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('cricclash_user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+    setLoading(false);
+  }, []);
+
+  const login = async (email: string, password: string) => {
+    try {
+      const res = await axios.post(`${API_BASE_URL}/users/login`, { email, password });
+      const userData = res.data.data;
+      setUser(userData);
+      localStorage.setItem('cricclash_user', JSON.stringify(userData));
+      localStorage.setItem('cricclash_username', userData.username);
+      localStorage.setItem('cricclash_isAdmin', String(userData.isAdmin));
+    } catch (err: any) {
+      throw new Error(err.response?.data?.message || 'Login failed');
+    }
+  };
+
+  const register = async (username: string, email: string, password: string) => {
+    try {
+      const res = await axios.post(`${API_BASE_URL}/users/register`, { username, email, password });
+      const userData = res.data.data;
+      setUser(userData);
+      localStorage.setItem('cricclash_user', JSON.stringify(userData));
+      localStorage.setItem('cricclash_username', userData.username);
+      localStorage.setItem('cricclash_isAdmin', String(userData.isAdmin));
+    } catch (err: any) {
+      throw new Error(err.response?.data?.message || 'Registration failed');
+    }
+  };
+
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem('cricclash_user');
+    localStorage.removeItem('cricclash_username');
+    localStorage.removeItem('cricclash_isAdmin');
+    window.location.href = '/';
+  };
+
+  const value = {
+    user,
+    loading,
+    login,
+    register,
+    logout,
+    isAuthenticated: !!user,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+}

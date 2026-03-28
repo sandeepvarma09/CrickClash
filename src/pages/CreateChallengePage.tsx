@@ -3,7 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import type { Match } from '@/types';
 
-const API = import.meta.env.VITE_API_URL ?? 'http://localhost:5000/api';
+import { API_BASE_URL } from '@/config/api';
+
+const API = API_BASE_URL;
 
 // ─── Stake presets ─────────────────────────────────────────────────────────────
 const STAKE_PRESETS = [
@@ -207,7 +209,7 @@ export default function CreateChallengePage() {
             <span className={`text-xs font-semibold px-3 py-1 rounded-full border
               ${match.format === 'T20' ? 'bg-orange-500/20 text-orange-400 border-orange-500/30' :
                 match.format === 'ODI' ? 'bg-blue-500/20   text-blue-400   border-blue-500/30' :
-                  match.format === 'Test' ? 'bg-purple-500/20 text-purple-400 border-purple-500/30' :
+                  match.format === 'TEST' ? 'bg-purple-500/20 text-purple-400 border-purple-500/30' :
                     'bg-pink-500/20 text-pink-400 border-pink-500/30'}`}>
               {match.format}
             </span>

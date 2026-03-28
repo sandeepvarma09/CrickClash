@@ -2,7 +2,9 @@ import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import type { Match, PaginatedResponse } from '@/types';
 
-const API = import.meta.env.VITE_API_URL ?? 'http://localhost:5000/api';
+import { API_BASE_URL } from '@/config/api';
+
+const API = API_BASE_URL;
 
 interface UseMatchesOptions {
   status?: string;   // e.g. 'upcoming,live'

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import axios from 'axios';
+import { useAuth } from '@/contexts/AuthContext';
+import AuthModal from '@/components/auth/AuthModal';
 
 const NAV_LINKS = [
   { to: '/matches',        label: '🏏 Matches'        },
@@ -10,47 +11,11 @@ const NAV_LINKS = [
 
 export default function Navbar() {
   const [menuOpen,  setMenuOpen]  = useState(false);
-  const [username,  setUsername]  = useState(localStorage.getItem('cricclash_username') ?? '');
-  const [isAdmin,   setIsAdmin]   = useState(localStorage.getItem('cricclash_isAdmin') === 'true');
-  const [inputOpen, setInputOpen] = useState(false);
-  const [isLogin,   setIsLogin]   = useState(true);
+  const [authModal, setAuthModal] = useState<{ open: boolean, mode: 'login' | 'register' }>({ open: false, mode: 'login' });
   
-  const [authDraft, setAuthDraft] = useState({ username: '', email: '', password: '' });
-
-  const handleAuth = async () => {
-    // TASK-AUTH: Front-end validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(authDraft.email)) {
-      alert('Please enter a valid email address.');
-      return;
-    }
-    if (authDraft.password.length < 6) {
-      alert('Password must be at least 6 characters long.');
-      return;
-    }
-    if (!isLogin && !authDraft.username.trim()) {
-      alert('Username is required.');
-      return;
-    }
-
-    try {
-      const endpoint = isLogin ? '/users/login' : '/users/register';
-      const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}${endpoint}`, authDraft);
-      
-      const user = res.data.data;
-      localStorage.setItem('cricclash_username', user.username);
-      localStorage.setItem('cricclash_isAdmin', String(user.isAdmin));
-      
-      setUsername(user.username);
-      setIsAdmin(user.isAdmin);
-      setInputOpen(false);
-      setAuthDraft({ username: '', email: '', password: '' });
-      window.location.reload(); // Force notification check on login
-    } catch (e: any) {
-      console.error('Failed to auth:', e);
-      alert(e.response?.data?.message || 'Authentication failed. Please check credentials.');
-    }
-  };
+  const { user, logout, isAuthenticated } = useAuth();
+  const isAdmin = user?.isAdmin || false;
+  const username = user?.username || '';
 
   return (
     <header
@@ -68,7 +33,7 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* Desktop Nav: Centered for arrangement */}
+        {/* Desktop Nav */}
         <div className="hidden md:flex flex-1 justify-center items-center gap-1">
           {NAV_LINKS.map(({ to, label }) => (
             <NavLink key={to} to={to}
@@ -90,9 +55,9 @@ export default function Navbar() {
           )}
         </div>
  
-        {/* Right: Profile Section (Noticeable) + CTA */}
+        {/* Right Section */}
         <div className="flex items-center gap-2 sm:gap-3">
-          {username ? (
+          {isAuthenticated ? (
             <div className="flex items-center gap-2">
               <Link to={`/profile/${username}`} id="nav-profile-link"
                 className="group flex items-center gap-2 pl-1 pr-1 sm:pr-3 py-1 rounded-full bg-slate-800/40 border border-slate-700/50 hover:border-orange-500/40 hover:bg-slate-800/60 transition-all duration-300 shadow-lg shadow-black/20">
@@ -105,13 +70,7 @@ export default function Navbar() {
                 </div>
               </Link>
               <button 
-                onClick={() => {
-                  localStorage.removeItem('cricclash_username');
-                  localStorage.removeItem('cricclash_isAdmin');
-                  setUsername('');
-                  setIsAdmin(false);
-                  window.location.href = '/'; // Refresh and go home
-                }}
+                onClick={logout}
                 className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-red-500/20 text-red-400 text-xs font-bold hover:bg-red-500/10 transition-all active:scale-95"
               >
                 <span>🚪</span>
@@ -119,7 +78,7 @@ export default function Navbar() {
               </button>
             </div>
           ) : (
-            <button onClick={() => setInputOpen(v => !v)} id="nav-set-username"
+            <button onClick={() => setAuthModal({ open: true, mode: 'login' })}
               className="px-4 py-2 rounded-xl text-sm font-bold text-slate-300 bg-slate-800/40 border border-slate-700/50 hover:border-orange-500/40 transition-all">
               Login
             </button>
@@ -137,32 +96,6 @@ export default function Navbar() {
           </button>
         </div>
       </nav>
-
-      {/* Auth input popover */}
-      {inputOpen && (
-        <div className="absolute right-4 top-14 z-50 bg-slate-900 border border-slate-700 rounded-xl p-4 shadow-2xl w-64">
-          <div className="flex justify-between items-center mb-2">
-             <p className="text-white text-xs font-semibold">{isLogin ? 'Login' : 'Register'}</p>
-             <button onClick={() => setIsLogin(!isLogin)} className="text-[10px] text-orange-400 font-semibold">{isLogin ? 'Create Account' : 'Switch to Login'}</button>
-          </div>
-          <p className="text-slate-400 text-[10px] mb-3">One account to rule them all!</p>
-          
-          {!isLogin && (
-            <input type="text" placeholder="Username" value={authDraft.username}
-              onChange={e => setAuthDraft({...authDraft, username: e.target.value})}
-              className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-orange-500/50 mb-2" />
-          )}
-          <input type="email" placeholder="Email" value={authDraft.email}
-            onChange={e => setAuthDraft({...authDraft, email: e.target.value})}
-            className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-orange-500/50 mb-2" />
-          <input type="password" placeholder="Password" value={authDraft.password}
-            onChange={e => setAuthDraft({...authDraft, password: e.target.value})}
-            onKeyDown={e => e.key === 'Enter' && handleAuth()}
-            className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-orange-500/50 mb-3" />
-            
-          <button onClick={handleAuth} className="btn-primary w-full text-xs py-2">{isLogin ? 'Login to Account' : 'Register'}</button>
-        </div>
-      )}
 
       {/* Mobile menu */}
       {menuOpen && (
@@ -189,7 +122,7 @@ export default function Navbar() {
             )}
           </div>
 
-          {username && (
+          {isAuthenticated && (
             <div className="mt-12 pt-12 border-t border-white/5">
               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-6 px-4">Account</p>
               <div className="grid gap-3">
@@ -205,12 +138,8 @@ export default function Navbar() {
                 </Link>
                 <button 
                   onClick={() => {
-                    localStorage.removeItem('cricclash_username');
-                    localStorage.removeItem('cricclash_isAdmin');
-                    setUsername('');
-                    setIsAdmin(false);
+                    logout();
                     setMenuOpen(false);
-                    window.location.href = '/';
                   }}
                   className="flex items-center gap-3 px-5 py-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 font-bold active:scale-95 transition-all"
                 >
@@ -226,6 +155,13 @@ export default function Navbar() {
           </div>
         </div>
       )}
+
+      {/* Premium Auth Modal */}
+      <AuthModal 
+        isOpen={authModal.open} 
+        onClose={() => setAuthModal({ ...authModal, open: false })} 
+        initialMode={authModal.mode} 
+      />
     </header>
   );
 }

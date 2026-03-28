@@ -3,7 +3,9 @@ import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { gsap } from '@/lib/gsap';
 import axios from 'axios';
 
-const API = import.meta.env.VITE_API_URL ?? 'http://localhost:5000/api';
+import { API_BASE_URL } from '@/config/api';
+
+const API = API_BASE_URL;
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 interface PredAnswers {

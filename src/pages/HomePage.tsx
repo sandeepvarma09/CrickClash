@@ -6,7 +6,9 @@ import axios from 'axios';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const API = import.meta.env.VITE_API_URL ?? 'http://localhost:5000/api';
+import { API_BASE_URL } from '@/config/api';
+
+const API = API_BASE_URL;
 
 interface UserEntry {
   _id: string; username: string;

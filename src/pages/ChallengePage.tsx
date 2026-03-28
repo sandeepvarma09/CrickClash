@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const API     = import.meta.env.VITE_API_URL ?? 'http://localhost:5000/api';
-const APP_URL = import.meta.env.VITE_APP_URL ?? 'http://localhost:3000';
+import { API_BASE_URL, APP_URL as CENTRAL_APP_URL } from '@/config/api';
+
+const API     = API_BASE_URL;
+const APP_URL = CENTRAL_APP_URL;
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 interface Team       { name: string; shortName: string }
