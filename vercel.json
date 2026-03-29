@@ -1,25 +1,6 @@
 {
   "version": 2,
-  "env": {
-    "MONGO_URI": "mongodb+srv://sandeepvarma4610_db_user:Cricket2026@nxtmongo.2omg3bc.mongodb.net/CricClash?retryWrites=true&w=majority&appName=NxtMongo",
-    "JWT_SECRET": "your_super_secret_jwt_key",
-    "ADMIN_USERNAME": "admin",
-    "ADMIN_PASSWORD": "admin123",
-    "CLIENT_URL": "https://cricclash-v1.vercel.app",
-    "NODE_ENV": "production"
-  },
-  "build": {
-    "env": {
-      "VITE_API_URL": "/api"
-    }
-  },
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index.ts" },
     { "source": "/(.*)", "destination": "/index.html" }
-  ],
-  "functions": {
-    "api/index.ts": {
-      "includeFiles": "server/src/**"
-    }
-  }
+  ]
 }
