@@ -72,28 +72,10 @@ app.use((_req: Request, res: Response) => {
 app.use(errorHandler);
 
 // ─── Start Server ─────────────────────────────────────────────────────────────
-const PORT = parseInt(process.env.PORT || '5000', 10);
+const PORT = process.env.PORT || 5000;
 
-if (!process.env.VERCEL) {
-  app.listen(PORT, () => {
-    console.log('');
-    console.log('🏏 ================================================');
-    console.log(`🚀  CricClash Server started!`);
-    console.log(`📡  URL:  http://localhost:${PORT}`);
-    console.log(`🌿  Env:  ${process.env.NODE_ENV || 'development'}`);
-    console.log('🏏 ================================================');
-    console.log('');
-    console.log('📋  Available API routes:');
-    console.log(`    GET  /api/health`);
-    console.log(`    ─────────────────────────────────────`);
-    console.log(`    GET  POST  /api/matches`);
-    console.log(`    GET  POST  /api/challenges`);
-    console.log(`    GET  POST  /api/predictions`);
-    console.log(`    GET        /api/leaderboard`);
-    console.log(`    GET  POST  /api/users`);
-    console.log(`    GET  POST  /api/admin`);
-    console.log('');
-  });
-}
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
 export default app;
