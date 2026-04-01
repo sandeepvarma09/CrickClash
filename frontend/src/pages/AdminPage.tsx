@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-const API = import.meta.env.VITE_API_URL ?? 'http://localhost:5000/api';
-const APP = import.meta.env.VITE_APP_URL  ?? 'http://localhost:3000';
+import { API_BASE_URL, APP_URL as CENTRAL_APP_URL } from '@/config/api';
+
+const API = API_BASE_URL;
+const APP = CENTRAL_APP_URL;
 
 const adminAxios = axios.create();
 
@@ -120,7 +122,7 @@ function ResultForm({ match, token, onSuccess }: { match: MatchRow; token: strin
       const a1 = getAnswer(1) || t1;
       const a2 = getAnswer(2) || 'TBD';
       const a3 = getAnswer(3) || 'TBD';
-      await adminAxios.put(`${API}/admin/matches/${match._id}/result`, {
+      await adminAxios.put(`${API}/api/admin/matches/${match._id}/result`, {
         tossWinner:        a0,
         matchWinner:       a1,
         topRunScorer:      a2,
@@ -314,7 +316,7 @@ function CreateMatchForm({ token, onCreated }: { token: string; onCreated: () =>
       const defaultDate = new Date();
       defaultDate.setDate(defaultDate.getDate() + 7);
       defaultDate.setHours(19, 30, 0, 0);
-      await adminAxios.post(`${API}/admin/matches`, {
+      await adminAxios.post(`${API}/api/admin/matches`, {
         team1Name: form.team1Name, team1Short: form.team1Short,
         team2Name: form.team2Name, team2Short: form.team2Short,
         venue: form.venue, format: form.format,
@@ -333,7 +335,7 @@ function CreateMatchForm({ token, onCreated }: { token: string; onCreated: () =>
   const seed = async () => {
     setSeeding(true);
     try {
-      await adminAxios.get(`${API}/admin/seed`, { headers: adminHeaders(token) });
+      await adminAxios.get(`${API}/api/admin/seed`, { headers: adminHeaders(token) });
       onCreated();
     } catch { /* silent */ }
     finally { setSeeding(false); }
@@ -478,7 +480,7 @@ function CreateChallengeTab({ token, matches }: { token: string; matches: MatchR
       const a2 = getAnswer(2, q[2]) ?? '';
       const a3 = getAnswer(3, q[3]) ?? '';
 
-      const r = await adminAxios.post(`${API}/challenges`, {
+      const r = await adminAxios.post(`${API}/api/challenges`, {
         matchId:  selectedMatch._id,
         username: creator.trim().toLowerCase(),
         stake:    finalStake.trim(),
@@ -687,7 +689,7 @@ function AdminLogin({ onLogin }: { onLogin: (token: string) => void }) {
   const login = async () => {
     setLoading(true); setError('');
     try {
-      const r = await adminAxios.post(`${API}/admin/login`, creds);
+      const r = await adminAxios.post(`${API}/api/admin/login`, creds);
       const token = r.data.data?.token;
       localStorage.setItem('adminToken', token);
       onLogin(token);
@@ -744,7 +746,7 @@ export default function AdminPage() {
   const fetchMatches = () => {
     setLoadingM(true);
     // Use admin endpoint so newly created matches appear immediately
-    adminAxios.get(`${API}/admin/matches?limit=50`, { headers: adminHeaders(token) })
+    adminAxios.get(`${API}/api/admin/matches?limit=50`, { headers: adminHeaders(token) })
       .then(r => {
         const data = r.data.data;
         setMatches(Array.isArray(data) ? data : (data?.items ?? []));
@@ -755,7 +757,7 @@ export default function AdminPage() {
 
   const fetchChallenges = () => {
     setLoadingC(true);
-    adminAxios.get(`${API}/admin/challenges`, { headers: adminHeaders(token) })
+    adminAxios.get(`${API}/api/admin/challenges`, { headers: adminHeaders(token) })
       .then(r => setChallenges(r.data.data ?? []))
       .finally(() => setLoadingC(false));
   };
@@ -769,14 +771,14 @@ export default function AdminPage() {
 
   const deleteChallenge = async (id: string) => {
     if (!confirm('Delete this challenge?')) return;
-    await adminAxios.delete(`${API}/admin/challenges/${id}`, { headers: adminHeaders(token) });
+    await adminAxios.delete(`${API}/api/admin/challenges/${id}`, { headers: adminHeaders(token) });
     fetchChallenges();
   };
 
   const deleteMatch = async (id: string) => {
     if (!confirm('Delete this match? This will also remove linked challenges.')) return;
     try {
-      await adminAxios.delete(`${API}/admin/matches/${id}`, { headers: adminHeaders(token) });
+      await adminAxios.delete(`${API}/api/admin/matches/${id}`, { headers: adminHeaders(token) });
       fetchMatches();
     } catch (e) {
       alert(axios.isAxiosError(e) ? (e.response?.data?.message ?? 'Failed to delete') : 'Failed to delete');

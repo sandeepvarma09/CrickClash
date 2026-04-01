@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 import { gsap } from '@/lib/gsap';
 import axios from 'axios';
 
-const API = import.meta.env.VITE_API_URL ?? 'http://localhost:5000/api';
+import { API_BASE_URL } from '@/config/api';
+
+const API = API_BASE_URL;
 
 interface UserEntry {
   _id: string;
@@ -103,7 +105,7 @@ export default function LeaderboardPage() {
 
   useEffect(() => {
     setLoading(true); setError('');
-    axios.get(`${API}/leaderboard/${tab}`)
+    axios.get(`${API}/api/leaderboard/${tab}`)
       .then(r => setUsers(r.data.data ?? []))
       .catch(e => setError(e.response?.data?.message ?? 'Failed to load leaderboard'))
       .finally(() => setLoading(false));

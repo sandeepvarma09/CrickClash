@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+import { API_BASE_URL } from '@/config/api';
+
+const API = API_BASE_URL;
 
 export default function ResultNotification() {
   const [data, setData] = useState<any>(null);
@@ -14,7 +16,7 @@ export default function ResultNotification() {
     // Check if we've already shown this notification
     const checkNotification = async () => {
       try {
-        const res = await axios.get(`${API}/users/${username}/notifications/latest`);
+        const res = await axios.get(`${API}/api/users/${username}/notifications/latest`);
         if (!res.data.data) return;
 
         const result = res.data.data;

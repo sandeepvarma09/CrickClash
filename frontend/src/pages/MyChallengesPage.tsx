@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 import { gsap } from '@/lib/gsap';
 import axios from 'axios';
 
-const API = import.meta.env.VITE_API_URL ?? 'http://localhost:5000/api';
+import { API_BASE_URL } from '@/config/api';
+
+const API = API_BASE_URL;
 
 interface Prediction {
   _id: string;
@@ -31,7 +33,7 @@ export default function MyChallengesPage() {
 
   useEffect(() => {
     if (!username) return;
-    axios.get(`${API}/users/${username}/predictions`)
+    axios.get(`${API}/api/users/${username}/predictions`)
       .then(r => setPredictions(r.data.data ?? []))
       .catch(e => console.error(e))
       .finally(() => setLoading(false));

@@ -3,7 +3,9 @@ import { useParams, Link } from 'react-router-dom';
 import { gsap } from '@/lib/gsap';
 import axios from 'axios';
 
-const API = import.meta.env.VITE_API_URL ?? 'http://localhost:5000/api';
+import { API_BASE_URL } from '@/config/api';
+
+const API = API_BASE_URL;
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 interface UserStats {
@@ -77,7 +79,7 @@ export default function ProfilePage() {
   useEffect(() => {
     if (!username) return;
     setLoading(true);
-    axios.get(`${API}/users/${username}`)
+    axios.get(`${API}/api/users/${username}`)
       .then(r => {
         setProfile(r.data.data?.user    ?? null);
         setRecent(r.data.data?.recentPredictions ?? []);
