@@ -30,7 +30,7 @@ export function useMatches({ status = 'upcoming,live', format }: UseMatchesOptio
       const params: Record<string, string> = { status };
       if (format) params.format = format;
 
-      const res = await axios.get<PaginatedResponse<Match>>(`${API}/matches`, { params });
+      const res = await axios.get<PaginatedResponse<Match>>(`${API}/api/matches`, { params });
       setMatches(res.data.data ?? []);
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {

@@ -115,7 +115,7 @@ export default function CreateChallengePage() {
   useEffect(() => {
     if (!matchId) return;
     setMatchLoading(true);
-    axios.get(`${API}/matches/${matchId}`)
+    axios.get(`${API}/api/matches/${matchId}`)
       .then((r) => setMatch(r.data.data))
       .catch(() => setMatchError('Could not load match details'))
       .finally(() => setMatchLoading(false));
@@ -148,7 +148,7 @@ export default function CreateChallengePage() {
     setSubmitting(true);
     setSubmitError('');
     try {
-      const res = await axios.post(`${API}/challenges`, {
+      const res = await axios.post(`${API}/api/challenges`, {
         matchId,
         username: username.trim(),
         stake: finalStake,

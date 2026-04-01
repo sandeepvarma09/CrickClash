@@ -28,7 +28,7 @@ export default function HomePage() {
 
   // Fetch top 5 players
   useEffect(() => {
-    axios.get(`${API}/leaderboard/global`).then(r => setTopPlayers((r.data.data ?? []).slice(0, 5))).catch(() => {});
+    axios.get(`${API}/api/leaderboard/global`).then(r => setTopPlayers((r.data.data ?? []).slice(0, 5))).catch(() => {});
   }, []);
 
   useEffect(() => {

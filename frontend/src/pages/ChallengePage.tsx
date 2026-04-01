@@ -145,7 +145,7 @@ function JoinForm({ challenge, onDone }: { challenge: ChallengeData; onDone: (id
     if (!valid) return;
     setSubmitting(true); setError('');
     try {
-      await axios.post(`${API}/predictions`, {
+      await axios.post(`${API}/api/predictions`, {
         challengeId: challenge.challengeId,
         username:    username.trim(),
         stake:       finalStake.trim(),
@@ -267,8 +267,8 @@ export default function ChallengePage() {
     if (!id) return;
     setLoading(true);
     Promise.all([
-      axios.get(`${API}/challenges/${id}`),
-      axios.get(`${API}/challenges/${id}/predictions`)
+      axios.get(`${API}/api/challenges/${id}`),
+      axios.get(`${API}/api/challenges/${id}/predictions`)
     ]).then(([cRes, pRes]) => {
       setChallenge(cRes.data.data?.challenge ?? null);
       setPrediction(cRes.data.data?.creatorPrediction ?? null);

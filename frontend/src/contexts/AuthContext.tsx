@@ -33,7 +33,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
-      const res = await axios.post(`${API_BASE_URL}/users/login`, { email, password });
+      const res = await axios.post(`${API_BASE_URL}/api/users/login`, { email, password });
       const userData = res.data.data;
       setUser(userData);
       localStorage.setItem('cricclash_user', JSON.stringify(userData));
@@ -46,7 +46,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = async (username: string, email: string, password: string) => {
     try {
-      const res = await axios.post(`${API_BASE_URL}/users/register`, { username, email, password });
+      const res = await axios.post(`${API_BASE_URL}/api/users/register`, { username, email, password });
       const userData = res.data.data;
       setUser(userData);
       localStorage.setItem('cricclash_user', JSON.stringify(userData));

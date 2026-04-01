@@ -34,7 +34,7 @@ async function apiClient<T>(endpoint: string, options: FetchOptions = {}): Promi
     config.body = JSON.stringify(body);
   }
 
-  const response = await fetch(`${BASE_URL}${endpoint}`, config);
+  const response = await fetch(`${BASE_URL}/api${endpoint}`, config);
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));

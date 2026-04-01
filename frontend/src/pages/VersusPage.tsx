@@ -101,8 +101,8 @@ export default function VersusPage() {
     if (!id) return;
     setLoading(true);
     Promise.all([
-      axios.get(`${API}/challenges/${id}`),
-      axios.get(`${API}/challenges/${id}/predictions`),
+      axios.get(`${API}/api/challenges/${id}`),
+      axios.get(`${API}/api/challenges/${id}/predictions`),
     ])
       .then(([cRes, pRes]) => {
         // The cRes.data.data object has challenge with matchId populated
