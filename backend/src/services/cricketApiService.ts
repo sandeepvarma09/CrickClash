@@ -163,12 +163,12 @@ class CricketApiService {
   }
 
   // ─── Normalize match format string ──────────────────────────────────────────
-  normalizeFormat(type: string): 'T20' | 'ODI' | 'Test' | 'T10' {
+  normalizeFormat(type: string): 'IPL' | 'T20' | 'ODI' | 'TEST' {
     const t = type.toLowerCase();
+    if (t.includes('ipl')) return 'IPL';
     if (t.includes('t20')) return 'T20';
     if (t.includes('odi') || t.includes('one day')) return 'ODI';
-    if (t.includes('test')) return 'Test';
-    if (t.includes('t10')) return 'T10';
+    if (t.includes('test')) return 'TEST';
     return 'T20';
   }
 
