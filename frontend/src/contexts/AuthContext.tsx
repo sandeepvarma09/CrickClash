@@ -41,7 +41,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('cricclash_username', userData.username);
       localStorage.setItem('cricclash_isAdmin', String(userData.isAdmin));
     } catch (err: any) {
-      throw new Error(err.response?.data?.message || 'Login failed');
+      const msg = err.response?.data?.message || err.message || 'Login failed';
+      throw new Error(msg);
     }
   };
 
@@ -54,7 +55,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('cricclash_username', userData.username);
       localStorage.setItem('cricclash_isAdmin', String(userData.isAdmin));
     } catch (err: any) {
-      throw new Error(err.response?.data?.message || 'Registration failed');
+      const msg = err.response?.data?.message || err.message || 'Registration failed';
+      throw new Error(msg);
     }
   };
 
@@ -70,7 +72,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await axios.post(`${API_BASE_URL}/api/users/reset-password`, { email, newPassword });
     } catch (err: any) {
-      throw new Error(err.response?.data?.message || 'Password reset failed');
+      const msg = err.response?.data?.message || err.message || 'Password reset failed';
+      throw new Error(msg);
     }
   };
 
