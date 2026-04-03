@@ -14,6 +14,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (username: string, email: string, password: string) => Promise<void>;
   logout: () => void;
+  resetPassword: (email: string, newPassword: string) => Promise<void>;
   isAuthenticated: boolean;
 }
 
@@ -65,12 +66,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     window.location.href = '/';
   };
 
+  const resetPassword = async (email: string, newPassword: string) => {
+    try {
+      await axios.post(`${API_BASE_URL}/api/users/reset-password`, { email, newPassword });
+    } catch (err: any) {
+      throw new Error(err.response?.data?.message || 'Password reset failed');
+    }
+  };
+
   const value = {
     user,
     loading,
     login,
     register,
     logout,
+    resetPassword,
     isAuthenticated: !!user,
   };
 

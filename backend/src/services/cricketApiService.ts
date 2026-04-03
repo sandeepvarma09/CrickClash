@@ -16,42 +16,42 @@ export interface CricApiScore {
 }
 
 export interface CricApiMatch {
-  id:          string;
-  name:        string;
-  matchType:   string;  // 'T20' | 'odi' | 'test' | 't10'
-  status:      string;  // e.g. 'Match not started' | 'India won ...' etc.
-  venue:       string;
-  date:        string;
+  id: string;
+  name: string;
+  matchType: string;  // 'T20' | 'odi' | 'test' | 't10'
+  status: string;  // e.g. 'Match not started' | 'India won ...' etc.
+  venue: string;
+  date: string;
   dateTimeGMT: string;
-  teams:       string[];
-  teamInfo:    CricApiTeamInfo[];
-  score?:      CricApiScore[];
-  series_id?:  string;
+  teams: string[];
+  teamInfo: CricApiTeamInfo[];
+  score?: CricApiScore[];
+  series_id?: string;
   fantasyEnabled?: boolean;
-  hasSquad?:   boolean;
+  hasSquad?: boolean;
   matchStarted?: boolean;
-  matchEnded?:   boolean;
+  matchEnded?: boolean;
 }
 
 export interface CricApiMatchInfo extends CricApiMatch {
   tossWinner?: string;
   tossChoice?: string;
-  result?:     string;
-  series?:     string;
-  players?:    Record<string, CricApiPlayer[]>;
+  result?: string;
+  series?: string;
+  players?: Record<string, CricApiPlayer[]>;
 }
 
 export interface CricApiPlayer {
-  id:         string;
-  name:       string;
+  id: string;
+  name: string;
   battingStyle?: string;
   bowlingStyle?: string;
-  country?:   string;
-  role?:      string;
+  country?: string;
+  role?: string;
 }
 
 export interface CricApiSeriesMatch {
-  id:   string;
+  id: string;
   name: string;
   date: string;
   matchType: string;
@@ -59,10 +59,10 @@ export interface CricApiSeriesMatch {
 }
 
 interface CricApiResponse<T> {
-  apikey:    string;
-  data:      T;
-  status:    string;
-  info:      { hitsToday: number; hitsUsed: number; hitsLimit: number; };
+  apikey: string;
+  data: T;
+  status: string;
+  info: { hitsToday: number; hitsUsed: number; hitsLimit: number; };
 }
 
 // ─── Cricket API Service ───────────────────────────────────────────────────────
@@ -189,110 +189,110 @@ class CricketApiService {
 export function getMockMatches(): CricApiMatch[] {
   const now = new Date();
   const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-  const dayAfter  = new Date(now.getTime() + 48 * 60 * 60 * 1000);
-  const in3Days   = new Date(now.getTime() + 72 * 60 * 60 * 1000);
+  const dayAfter = new Date(now.getTime() + 48 * 60 * 60 * 1000);
+  const in3Days = new Date(now.getTime() + 72 * 60 * 60 * 1000);
 
   return [
     {
-      id:           'mock-ind-aus-001',
-      name:         'India vs Australia, 1st T20I',
-      matchType:    'T20',
-      status:       'Match not started',
-      venue:        'Wankhede Stadium',
-      date:         tomorrow.toISOString().split('T')[0],
-      dateTimeGMT:  tomorrow.toISOString(),
-      teams:        ['India', 'Australia'],
+      id: 'mock-ind-aus-001',
+      name: 'India vs Australia, 1st T20I',
+      matchType: 'T20',
+      status: 'Match not started',
+      venue: 'Wankhede Stadium',
+      date: tomorrow.toISOString().split('T')[0],
+      dateTimeGMT: tomorrow.toISOString(),
+      teams: ['India', 'Australia'],
       teamInfo: [
-        { name: 'India',     shortname: 'IND', img: '' },
+        { name: 'India', shortname: 'IND', img: '' },
         { name: 'Australia', shortname: 'AUS', img: '' },
       ],
       matchStarted: false,
-      matchEnded:   false,
+      matchEnded: false,
     },
     {
-      id:           'mock-pak-eng-002',
-      name:         'Pakistan vs England, 2nd ODI',
-      matchType:    'odi',
-      status:       'Match not started',
-      venue:        'Gaddafi Stadium',
-      date:         dayAfter.toISOString().split('T')[0],
-      dateTimeGMT:  dayAfter.toISOString(),
-      teams:        ['Pakistan', 'England'],
+      id: 'mock-pak-eng-002',
+      name: 'Pakistan vs England, 2nd ODI',
+      matchType: 'odi',
+      status: 'Match not started',
+      venue: 'Gaddafi Stadium',
+      date: dayAfter.toISOString().split('T')[0],
+      dateTimeGMT: dayAfter.toISOString(),
+      teams: ['Pakistan', 'England'],
       teamInfo: [
         { name: 'Pakistan', shortname: 'PAK', img: '' },
-        { name: 'England',  shortname: 'ENG', img: '' },
+        { name: 'England', shortname: 'ENG', img: '' },
       ],
       matchStarted: false,
-      matchEnded:   false,
+      matchEnded: false,
     },
     {
-      id:           'mock-sa-nz-003',
-      name:         'South Africa vs New Zealand, 1st Test',
-      matchType:    'test',
-      status:       'Match not started',
-      venue:        'Newlands Cricket Ground',
-      date:         in3Days.toISOString().split('T')[0],
-      dateTimeGMT:  in3Days.toISOString(),
-      teams:        ['South Africa', 'New Zealand'],
+      id: 'mock-sa-nz-003',
+      name: 'South Africa vs New Zealand, 1st Test',
+      matchType: 'test',
+      status: 'Match not started',
+      venue: 'Newlands Cricket Ground',
+      date: in3Days.toISOString().split('T')[0],
+      dateTimeGMT: in3Days.toISOString(),
+      teams: ['South Africa', 'New Zealand'],
       teamInfo: [
-        { name: 'South Africa', shortname: 'SA',  img: '' },
-        { name: 'New Zealand',  shortname: 'NZ',  img: '' },
+        { name: 'South Africa', shortname: 'SA', img: '' },
+        { name: 'New Zealand', shortname: 'NZ', img: '' },
       ],
       matchStarted: false,
-      matchEnded:   false,
+      matchEnded: false,
     },
     {
-      id:           'mock-ipl-csk-mi-004',
-      name:         'CSK vs MI, IPL 2025 Match 12',
-      matchType:    'T20',
-      status:       'Match not started',
-      venue:        'MA Chidambaram Stadium',
-      date:         tomorrow.toISOString().split('T')[0],
-      dateTimeGMT:  new Date(tomorrow.getTime() + 4 * 60 * 60 * 1000).toISOString(),
-      teams:        ['Chennai Super Kings', 'Mumbai Indians'],
+      id: 'mock-ipl-csk-mi-004',
+      name: 'CSK vs MI, IPL 2025 Match 12',
+      matchType: 'T20',
+      status: 'Match not started',
+      venue: 'MA Chidambaram Stadium',
+      date: tomorrow.toISOString().split('T')[0],
+      dateTimeGMT: new Date(tomorrow.getTime() + 4 * 60 * 60 * 1000).toISOString(),
+      teams: ['Chennai Super Kings', 'Mumbai Indians'],
       teamInfo: [
         { name: 'Chennai Super Kings', shortname: 'CSK', img: '' },
-        { name: 'Mumbai Indians',      shortname: 'MI',  img: '' },
+        { name: 'Mumbai Indians', shortname: 'MI', img: '' },
       ],
       matchStarted: false,
-      matchEnded:   false,
+      matchEnded: false,
     },
     {
-      id:           'mock-ipl-rcb-kkr-005',
-      name:         'RCB vs KKR, IPL 2025 Match 13',
-      matchType:    'T20',
-      status:       'Match not started',
-      venue:        'M Chinnaswamy Stadium',
-      date:         dayAfter.toISOString().split('T')[0],
-      dateTimeGMT:  new Date(dayAfter.getTime() + 4 * 60 * 60 * 1000).toISOString(),
-      teams:        ['Royal Challengers Bengaluru', 'Kolkata Knight Riders'],
+      id: 'mock-ipl-rcb-kkr-005',
+      name: 'RCB vs KKR, IPL 2025 Match 13',
+      matchType: 'T20',
+      status: 'Match not started',
+      venue: 'M Chinnaswamy Stadium',
+      date: dayAfter.toISOString().split('T')[0],
+      dateTimeGMT: new Date(dayAfter.getTime() + 4 * 60 * 60 * 1000).toISOString(),
+      teams: ['Royal Challengers Bengaluru', 'Kolkata Knight Riders'],
       teamInfo: [
         { name: 'Royal Challengers Bengaluru', shortname: 'RCB', img: '' },
-        { name: 'Kolkata Knight Riders',       shortname: 'KKR', img: '' },
+        { name: 'Kolkata Knight Riders', shortname: 'KKR', img: '' },
       ],
       matchStarted: false,
-      matchEnded:   false,
+      matchEnded: false,
     },
   ];
 }
 
 export function getMockPlayers(search = ''): CricApiPlayer[] {
   const players: CricApiPlayer[] = [
-    { id: 'p1', name: 'Virat Kohli',       role: 'Batsman',     country: 'India' },
-    { id: 'p2', name: 'Rohit Sharma',      role: 'Batsman',     country: 'India' },
-    { id: 'p3', name: 'Jasprit Bumrah',    role: 'Bowler',      country: 'India' },
-    { id: 'p4', name: 'Hardik Pandya',     role: 'All-rounder', country: 'India' },
-    { id: 'p5', name: 'Shubman Gill',      role: 'Batsman',     country: 'India' },
-    { id: 'p6', name: 'Steve Smith',       role: 'Batsman',     country: 'Australia' },
-    { id: 'p7', name: 'Pat Cummins',       role: 'Bowler',      country: 'Australia' },
-    { id: 'p8', name: 'David Warner',      role: 'Batsman',     country: 'Australia' },
-    { id: 'p9', name: 'Joe Root',          role: 'Batsman',     country: 'England' },
-    { id: 'p10', name: 'Ben Stokes',       role: 'All-rounder', country: 'England' },
-    { id: 'p11', name: 'Babar Azam',       role: 'Batsman',     country: 'Pakistan' },
-    { id: 'p12', name: 'Shaheen Afridi',   role: 'Bowler',      country: 'Pakistan' },
-    { id: 'p13', name: 'MS Dhoni',         role: 'Wicketkeeper', country: 'India' },
-    { id: 'p14', name: 'Suryakumar Yadav', role: 'Batsman',     country: 'India' },
-    { id: 'p15', name: 'Ravindra Jadeja',  role: 'All-rounder', country: 'India' },
+    { id: 'p1', name: 'Virat Kohli', role: 'Batsman', country: 'India' },
+    { id: 'p2', name: 'Rohit Sharma', role: 'Batsman', country: 'India' },
+    { id: 'p3', name: 'Jasprit Bumrah', role: 'Bowler', country: 'India' },
+    { id: 'p4', name: 'Hardik Pandya', role: 'All-rounder', country: 'India' },
+    { id: 'p5', name: 'Shubman Gill', role: 'Batsman', country: 'India' },
+    { id: 'p6', name: 'Steve Smith', role: 'Batsman', country: 'Australia' },
+    { id: 'p7', name: 'Pat Cummins', role: 'Bowler', country: 'Australia' },
+    { id: 'p8', name: 'David Warner', role: 'Batsman', country: 'Australia' },
+    { id: 'p9', name: 'Joe Root', role: 'Batsman', country: 'England' },
+    { id: 'p10', name: 'Ben Stokes', role: 'All-rounder', country: 'England' },
+    { id: 'p11', name: 'Babar Azam', role: 'Batsman', country: 'Pakistan' },
+    { id: 'p12', name: 'Shaheen Afridi', role: 'Bowler', country: 'Pakistan' },
+    { id: 'p13', name: 'MS Dhoni', role: 'Wicketkeeper', country: 'India' },
+    { id: 'p14', name: 'Suryakumar Yadav', role: 'Batsman', country: 'India' },
+    { id: 'p15', name: 'Ravindra Jadeja', role: 'All-rounder', country: 'India' },
   ];
 
   if (!search) return players;

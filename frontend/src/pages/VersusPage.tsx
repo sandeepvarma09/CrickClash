@@ -20,7 +20,16 @@ interface Participant {
   };
 }
 interface Question { question: string; options: string[]; correctAnswer?: string }
-interface ChallengeInfo { challengeId: string; stake: string; status: string; matchId: { status: string; questions: Question[] } }
+interface ChallengeInfo { challengeId: string; stake: string; status: string; matchId: { teams: [{name: string}, {name: string}]; status: string; questions?: Question[] } }
+
+function defaultMatchQuestions(t1: string, t2: string): Question[] {
+  return [
+    { question: 'Who will win the toss?', options: [t1, t2] },
+    { question: 'Who will win the match?', options: [t1, t2] },
+    { question: 'Who will be the top run scorer?', options: [] },
+    { question: 'Who will be the Player of the Match?', options: [] },
+  ];
+}
 
 // ─── Prediction row (side by side) ────────────────────────────────────────────
 
@@ -176,6 +185,10 @@ export default function VersusPage() {
   const p1Wins = revealed && p1 && p2 && (p1.score ?? 0) > (p2.score ?? 0);
   const p2Wins = revealed && p1 && p2 && (p2.score ?? 0) > (p1.score ?? 0);
 
+  const t1 = challenge?.matchId?.teams?.[0]?.name ?? 'Team 1';
+  const t2 = challenge?.matchId?.teams?.[1]?.name ?? 'Team 2';
+  const activeQuestions = challenge?.matchId?.questions?.length ? challenge.matchId.questions : defaultMatchQuestions(t1, t2);
+
   return (
     <div ref={containerRef} className="max-w-2xl mx-auto px-4 py-10 space-y-6">
 
@@ -218,9 +231,9 @@ export default function VersusPage() {
         <div className="border-t border-slate-700/50" />
 
         {/* Prediction comparisons */}
-        {p1 && p2 && challenge?.matchId.questions ? (
+        {p1 && p2 && activeQuestions.length > 0 ? (
           <div className="space-y-4">
-            {challenge.matchId.questions.map((q, i) => {
+            {activeQuestions.map((q, i) => {
               const v1 = String(p1.answers?.questionAnswers?.[i] || '—');
               const v2 = String(p2.answers?.questionAnswers?.[i] || '—');
               const r1 = p1.results?.questionResults?.[i];
