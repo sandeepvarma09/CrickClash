@@ -28,9 +28,30 @@ const app: Application = express();
 app.use(helmet());
 app.use(
   cors({
-    origin: process.env.NODE_ENV === 'production' 
-      ? (process.env.CLIENT_URL || 'https://crick-clash.vercel.app')
-      : true, // true reflects the exact origin back, allowing any local IP in development
+    origin: (origin, callback) => {
+      // In development, allow any origin (especially for local network testing)
+      if (process.env.NODE_ENV !== 'production' || !origin) {
+        return callback(null, true);
+      }
+      
+      const allowedOrigins = [
+        'https://crick-clash.vercel.app',
+        'https://cricclash-v1.vercel.app',
+        process.env.CLIENT_URL
+      ].filter(Boolean);
+
+      // Check if it's one of the explicitly allowed origins
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      
+      // Allow any vercel.app subdomain for maximum flexibility
+      if (origin.endsWith('.vercel.app')) {
+        return callback(null, true);
+      }
+
+      callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'x-admin-token'],
