@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useAuth } from '@/contexts/AuthContext';
+import AuthModal from '@/components/auth/AuthModal';
 
 import { API_BASE_URL, APP_URL as CENTRAL_APP_URL } from '@/config/api';
 
@@ -102,26 +104,16 @@ function defaultMatchQuestions(t1: string, t2: string): Question[] {
 
 // ─── Join Form — Dynamic question-based ────────────────────────────────────────
 function JoinForm({ challenge, onDone }: { challenge: ChallengeData; onDone: (id: string, u: string) => void }) {
+  const { user, isAuthenticated } = useAuth();
+  const username = user?.username || '';
+  
+  const [authModal, setAuthModal] = useState<{ open: boolean, mode: 'login' | 'register' }>({ open: false, mode: 'login' });
+  
   const t1 = challenge.matchId.teams[0].name;
   const t2 = challenge.matchId.teams[1].name;
   const questions: Question[] = challenge.matchId.questions?.length
     ? challenge.matchId.questions
     : defaultMatchQuestions(t1, t2);
-
-  const [username, setUsername] = useState(localStorage.getItem('cricclash_username') || '');
-  
-  useEffect(() => {
-    const handleStorage = () => {
-      const u = localStorage.getItem('cricclash_username');
-      if (u) setUsername(u);
-    };
-    window.addEventListener('storage', handleStorage);
-    const interval = setInterval(handleStorage, 1000);
-    return () => {
-      window.removeEventListener('storage', handleStorage);
-      clearInterval(interval);
-    };
-  }, []);
 
   const [answers, setAnswers]     = useState<string[]>(Array(questions.length).fill(''));
   const [freeText, setFreeText]   = useState<string[]>(Array(questions.length).fill(''));
@@ -170,16 +162,35 @@ function JoinForm({ challenge, onDone }: { challenge: ChallengeData; onDone: (id
       {/* Username */}
       <div>
         <label className="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">Your Profile</label>
-        {username ? (
+        {isAuthenticated ? (
           <div className="w-full bg-slate-800/70 border border-slate-700 rounded-xl px-4 py-3 text-white flex items-center gap-2">
             <span>👤</span> <strong>@{username}</strong>
           </div>
         ) : (
-          <div className="w-full bg-orange-500/10 border border-orange-500/30 rounded-xl px-4 py-3 text-orange-400 text-sm font-semibold">
-            ⚠️ Please click "+ Login" in the top bar to log in before predicting!
+          <div className="space-y-3">
+             <div className="w-full bg-orange-500/10 border border-orange-500/30 rounded-xl px-4 py-3 text-orange-400 text-sm font-semibold">
+               ⚠️ You need to log in to participate in matches and win!
+             </div>
+             <button 
+               onClick={() => setAuthModal({ open: true, mode: 'login' })}
+               className="w-full py-3 rounded-2xl bg-gradient-to-r from-orange-500 to-orange-600 text-white font-black text-sm uppercase tracking-widest shadow-lg shadow-orange-500/20 active:scale-95 transition-all"
+             >
+               ⚡ LOGIN TO PREDICT
+             </button>
+             <p className="text-center text-[10px] text-slate-500 font-bold uppercase tracking-widest">
+               Don't have an account? 
+               <button onClick={() => setAuthModal({ open: true, mode: 'register' })} className="ml-1 text-orange-400 hover:underline">Register Now</button>
+             </p>
           </div>
         )}
       </div>
+
+      {/* Auth Modal for JoinForm */}
+      <AuthModal 
+        isOpen={authModal.open} 
+        onClose={() => setAuthModal({ ...authModal, open: false })} 
+        initialMode={authModal.mode} 
+      />
 
       {/* Dynamic Questions */}
       <div className="border-t border-slate-700/50 pt-4 space-y-5">
@@ -261,7 +272,8 @@ export default function ChallengePage() {
   const [loading,    setLoading]    = useState(true);
   const [error,      setError]      = useState('');
   const [joined,     setJoined]     = useState(false);
-  const username = localStorage.getItem('cricclash_username');
+  const { user } = useAuth();
+  const username = user?.username || '';
 
   useEffect(() => {
     if (!id) return;
