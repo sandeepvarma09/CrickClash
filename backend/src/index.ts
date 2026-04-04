@@ -84,10 +84,10 @@ app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
 
 // ─── 404 Handler ──────────────────────────────────────────────────────────────
-app.use((_req: Request, res: Response) => {
+app.use((req: Request, res: Response) => {
   res.status(404).json({
     success: false,
-    message: `Route not found. Available routes: /api/health | /api/matches | /api/challenges | /api/predictions | /api/leaderboard | /api/users | /api/admin`,
+    message: `Route not found: ${req.originalUrl}. Available routes: /api/health | /api/matches | /api/challenges | /api/predictions | /api/leaderboard | /api/users | /api/admin`,
   });
 });
 
