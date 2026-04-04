@@ -1,20 +1,19 @@
 {
   "buildCommand": "npm install && npm run build",
   "outputDirectory": "dist",
-  "framework": "vite",
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "https://crickclash.onrender.com/api/$1"
+      "source": "/api/:path*",
+      "destination": "https://crickclash.onrender.com/api/:path*"
     },
     {
-      "source": "/((?!assets|favicon\\.ico|manifest\\.json|.*\\..*).*)",
+      "source": "/((?!assets/|favicon\\.ico|manifest\\.json|.*\\..*).*)",
       "destination": "/index.html"
     }
   ],
   "headers": [
     {
-      "source": "/api/(.*)",
+      "source": "/(.*)",
       "headers": [
         { "key": "Access-Control-Allow-Origin", "value": "*" },
         { "key": "Access-Control-Allow-Methods", "value": "GET,POST,PUT,DELETE,OPTIONS" },
