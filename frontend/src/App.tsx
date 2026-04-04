@@ -42,7 +42,6 @@ export default function App() {
             <Route path="/challenge/create/:matchId" element={<CreateChallenge />} />
             <Route path="/challenge/:id"             element={<ChallengePage />} />
             <Route path="/versus/:id"                element={<VersusPage />} />
-            <Route path="/versus/:id"                element={<VersusPage />} />
             <Route path="/leaderboard"               element={<LeaderboardPage />} />
             <Route path="/my-challenges"             element={<MyChallengesPage />} />
             <Route path="/profile/:username"         element={<ProfilePage />} />

@@ -90,7 +90,8 @@ challengeSchema.index({ challengeId: 1 }, { unique: true });
 challengeSchema.index({ matchId: 1 });
 challengeSchema.index({ creatorId: 1 });
 challengeSchema.index({ status: 1 });
-challengeSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 60 * 60 * 24 * 7 }); // TTL: 7 days after expiresAt
+// challengeSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 60 * 60 * 24 * 7 }); // TTL removed to preserve history
+
 
 // ─── Virtuals ──────────────────────────────────────────────────────────────────
 challengeSchema.virtual('participantCount').get(function (this: IChallenge) {

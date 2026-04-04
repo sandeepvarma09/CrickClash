@@ -41,7 +41,7 @@ function ShareButtons({ challengeId, stake }: { challengeId: string; stake: stri
   return (
     <div className="space-y-3">
       <p className="text-slate-400 text-sm font-medium">Share this challenge 👇</p>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2 sm:gap-3">
         <a id="share-whatsapp"
           href={`https://wa.me/?text=${encodeURIComponent(text)}`}
           target="_blank" rel="noopener noreferrer"
@@ -153,7 +153,7 @@ function JoinForm({ challenge, onDone }: { challenge: ChallengeData; onDone: (id
   };
 
   return (
-    <div className="card-glass p-6 space-y-5 border-orange-500/20">
+    <div className="card-glass p-4 sm:p-6 space-y-5 border-orange-500/20">
       <div className="text-center">
         <p className="text-white font-bold text-lg">Think you can beat @{challenge.creatorId?.username}? 🏏</p>
         <p className="text-slate-400 text-sm mt-1">Answer the {questions.length} questions + pick your stake!</p>
@@ -325,14 +325,14 @@ export default function ChallengePage() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-10 space-y-6">
+    <div className="max-w-2xl mx-auto px-3 sm:px-4 py-6 sm:py-10 space-y-4 sm:space-y-6">
 
       {/* Header */}
       <div className="text-center">
         <div className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 mb-4">
           🏏 Challenge #{challenge.challengeId}
         </div>
-        <h1 className="text-2xl font-black text-white" style={{ fontFamily: 'var(--font-display)' }}>
+        <h1 className="text-xl sm:text-2xl font-black text-white" style={{ fontFamily: 'var(--font-display)' }}>
           {t1.shortName} <span className="text-gradient">VS</span> {t2.shortName}
         </h1>
         <p className="text-slate-400 text-sm mt-1">
@@ -341,7 +341,7 @@ export default function ChallengePage() {
       </div>
 
       {/* Match Info */}
-      <div className="card-glass p-5 space-y-2 text-sm text-slate-400">
+      <div className="card-glass p-4 sm:p-5 space-y-2 text-sm text-slate-400">
         <p>⚔️ <span className="text-white font-medium">{t1.name}</span> vs <span className="text-white font-medium">{t2.name}</span></p>
         <p>📍 {match.venue}</p>
         <p>📅 {new Date(match.date).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
@@ -349,7 +349,7 @@ export default function ChallengePage() {
       </div>
 
       {/* Stake */}
-      <div className="card-glass p-5 bg-orange-500/5 border-orange-500/20">
+      <div className="card-glass p-4 sm:p-5 bg-orange-500/5 border-orange-500/20">
         <p className="text-xs text-slate-400 mb-1 font-medium">🎯 What's at stake</p>
         <p className="text-white font-bold text-lg">"{challenge.stake}"</p>
       </div>

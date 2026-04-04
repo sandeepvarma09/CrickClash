@@ -122,6 +122,28 @@ router.put('/matches/:id/result', adminGuard, asyncHandler(async (req: Request, 
   }
 }));
 
+// ─── PUT /api/admin/matches/:id/questions — edit match questions ────────────
+router.put('/matches/:id/questions', adminGuard, asyncHandler(async (req: Request, res: Response) => {
+  const { questions } = req.body as { questions?: { question: string; options: string[] }[] };
+
+  const matchDoc = await Match.findById(req.params.id);
+  if (!matchDoc) throw new AppError('Match not found', 404);
+
+  // Validate & sanitize questions (max 4)
+  const sanitizedQuestions = Array.isArray(questions)
+    ? questions.slice(0, 4).filter(q => q.question?.trim()).map(q => ({
+        question:      q.question.trim(),
+        options:       (q.options ?? []).filter((o: string) => o?.trim()).map((o: string) => o.trim()),
+        correctAnswer: '',
+      }))
+    : [];
+
+  matchDoc.questions = sanitizedQuestions as any;
+  await matchDoc.save();
+
+  sendSuccess(res, matchDoc, 'Questions updated successfully');
+}));
+
 // ─── DELETE /api/admin/matches/:id ───────────────────────────────────────────
 router.delete('/matches/:id', adminGuard, asyncHandler(async (req: Request, res: Response) => {
   const match = await Match.findByIdAndDelete(req.params.id);

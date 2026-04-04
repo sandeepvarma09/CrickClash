@@ -34,6 +34,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
+  /* Prevent horizontal scroll on mobile */
+  overflow-x: hidden;
 }
 
 /* ─── Scrollbar ─────────────────────────────────────────────────────────────── */
@@ -152,8 +154,52 @@ input[type="datetime-local"] {
   appearance: none;
 }
 input[type="date"]::-webkit-calendar-picker-indicator,
-input[type="time"]::-webkit-calendar-picker-indicator {
+input[type="time"]::-webkit-calendar-picker-indicator,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   filter: invert(1) opacity(0.6);
   cursor: pointer;
+}
+
+/* ─── Mobile Responsive Overhaul ───────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .section-title {
+    @apply text-2xl;
+  }
+  
+  /* Make all select/input elements touch-friendly and prevent zoom */
+  select, input, button {
+    font-size: 16px !important;
+    min-height: 48px;
+  }
+
+  /* Reduce layout padding for mobile */
+  .max-w-6xl, .max-w-5xl, .max-w-4xl, .max-w-2xl {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  /* Cards should be tighter on mobile */
+  .card-glass {
+    @apply rounded-xl;
+    padding: 1rem !important;
+  }
+}
+
+/* ─── Modern Scroll Progress (Optional polish) ──────────────────────────────── */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out forwards;
+}
+
+/* ─── Safe-area support for notched phones ──────────────────────────────────── */
+@supports(padding: max(0px)) {
+  body {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  }
 }
 

@@ -274,15 +274,73 @@ function QuestionBuilder({ questions, onChange }: { questions: Question[]; onCha
   );
 }
 
+// ─── Edit Match Questions (inline) ────────────────────────────────────────────
+function EditMatchQuestions({ match, token, onSuccess }: { match: MatchRow; token: string; onSuccess: () => void }) {
+  const [editing, setEditing]   = useState(false);
+  const [saving, setSaving]     = useState(false);
+  const [error, setError]       = useState('');
+  const t1 = match.teams[0].name, t2 = match.teams[1].name;
+  const [questions, setQuestions] = useState<Question[]>(
+    match.questions?.length ? [...match.questions] : defaultQuestions(t1, t2)
+  );
+
+  const save = async () => {
+    setSaving(true); setError('');
+    try {
+      await adminAxios.put(`${API}/api/admin/matches/${match._id}/questions`, {
+        questions: questions.filter(q => q.question.trim()),
+      }, { headers: adminHeaders(token) });
+      setEditing(false);
+      onSuccess();
+    } catch (e) {
+      setError(axios.isAxiosError(e) ? (e.response?.data?.message ?? e.message) : 'Failed to update questions');
+    } finally { setSaving(false); }
+  };
+
+  if (!editing) {
+    return (
+      <button onClick={() => setEditing(true)}
+        className="text-xs px-3 py-1.5 rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors">
+        ✏️ Edit Questions
+      </button>
+    );
+  }
+
+  return (
+    <div className="mt-3 p-4 bg-slate-800/60 rounded-xl border border-blue-500/20 space-y-4">
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-semibold text-blue-400">✏️ Edit Questions</p>
+        <button onClick={() => setEditing(false)} className="text-xs text-slate-500 hover:text-slate-300">✕ Cancel</button>
+      </div>
+      <QuestionBuilder questions={questions} onChange={setQuestions} />
+      {error && <p className="text-red-400 text-xs">⚠️ {error}</p>}
+      <div className="flex gap-2">
+        <button onClick={() => setEditing(false)}
+          className="flex-1 py-2 border border-slate-700 rounded-lg text-slate-400 text-xs hover:border-slate-500 transition-colors">Cancel</button>
+        <button onClick={save} disabled={saving}
+          className={`flex-1 py-2 rounded-lg text-xs font-semibold transition-all
+            ${!saving ? 'bg-blue-500 text-white hover:bg-blue-600' : 'bg-slate-700 text-slate-500 cursor-not-allowed'}`}>
+          {saving ? 'Saving…' : 'Save Questions'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ─── Create Match Form ────────────────────────────────────────────────────────
 function CreateMatchForm({ token, onCreated }: { token: string; onCreated: () => void }) {
   const [open, setOpen]       = useState(false);
   const [saving, setSaving]   = useState(false);
   const [seeding, setSeeding] = useState(false);
   const [error, setError]     = useState('');
+  // Default date: 7 days from now at 19:30
+  const defaultDateStr = (() => {
+    const d = new Date(); d.setDate(d.getDate() + 7); d.setHours(19, 30, 0, 0);
+    return d.toISOString().slice(0, 16); // for datetime-local input
+  })();
   const [form, setForm]       = useState({
     team1Name: '', team1Short: '', team2Name: '', team2Short: '',
-    venue: '', format: 'IPL',
+    venue: '', format: 'IPL', matchDate: defaultDateStr,
   });
   const [questions, setQuestions] = useState<Question[]>(defaultQuestions('', ''));
 
@@ -293,7 +351,6 @@ function CreateMatchForm({ token, onCreated }: { token: string; onCreated: () =>
       const updated = slot === 1
         ? { ...p, team1Name: t.name, team1Short: t.short }
         : { ...p, team2Name: t.name, team2Short: t.short };
-      // Auto-update toss/winner question options
       const t1 = slot === 1 ? t.name : p.team1Name;
       const t2 = slot === 2 ? t.name : p.team2Name;
       if (t1 && t2) {
@@ -305,26 +362,21 @@ function CreateMatchForm({ token, onCreated }: { token: string; onCreated: () =>
     });
   };
 
-  // valid: only need both teams (different) and the venue
-  const valid = !!(form.team1Name && form.team2Name && form.team1Name !== form.team2Name && form.venue.trim());
+  const valid = !!(form.team1Name && form.team2Name && form.team1Name !== form.team2Name && form.venue.trim() && form.matchDate);
 
   const save = async () => {
     if (!valid) return;
     setSaving(true); setError('');
     try {
-      // Auto-set date to 7 days from now at 19:30 IST
-      const defaultDate = new Date();
-      defaultDate.setDate(defaultDate.getDate() + 7);
-      defaultDate.setHours(19, 30, 0, 0);
       await adminAxios.post(`${API}/api/admin/matches`, {
         team1Name: form.team1Name, team1Short: form.team1Short,
         team2Name: form.team2Name, team2Short: form.team2Short,
         venue: form.venue, format: form.format,
-        date: defaultDate.toISOString(),
+        date: new Date(form.matchDate).toISOString(),
         questions: questions.filter(q => q.question.trim()),
       }, { headers: adminHeaders(token) });
       setOpen(false);
-      setForm({ team1Name: '', team1Short: '', team2Name: '', team2Short: '', venue: '', format: 'IPL' });
+      setForm({ team1Name: '', team1Short: '', team2Name: '', team2Short: '', venue: '', format: 'IPL', matchDate: defaultDateStr });
       setQuestions(defaultQuestions('', ''));
       onCreated();
     } catch (e) {
@@ -354,11 +406,11 @@ function CreateMatchForm({ token, onCreated }: { token: string; onCreated: () =>
       </div>
 
       {open && (
-        <div className="card-glass p-5 space-y-5 border-orange-500/20">
+        <div className="card-glass p-4 sm:p-5 space-y-5 border-orange-500/20">
           <h3 className="text-white font-bold text-sm">🏏 New Match</h3>
 
           {/* Teams */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {([1, 2] as const).map(slot => {
               const nameKey  = slot === 1 ? 'team1Name'  : 'team2Name';
               const shortKey = slot === 1 ? 'team1Short' : 'team2Short';
@@ -386,8 +438,8 @@ function CreateMatchForm({ token, onCreated }: { token: string; onCreated: () =>
             })}
           </div>
 
-          {/* Format only (date/city/series removed) */}
-          <div className="grid grid-cols-2 gap-3">
+          {/* Format + Venue + Date */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
               <p className="text-xs text-slate-400 mb-1">🏟️ Format</p>
               <select value={form.format} onChange={e => set('format', e.target.value)}
@@ -399,6 +451,11 @@ function CreateMatchForm({ token, onCreated }: { token: string; onCreated: () =>
               <p className="text-xs text-slate-400 mb-1">📍 Venue</p>
               <input type="text" placeholder="e.g. Wankhede Stadium" value={form.venue} onChange={e => set('venue', e.target.value)}
                 className="w-full bg-slate-800/60 border border-slate-700 rounded-lg px-3 py-2 text-white text-xs placeholder-slate-600 focus:outline-none focus:border-orange-500/50" />
+            </div>
+            <div>
+              <p className="text-xs text-slate-400 mb-1">📅 Match Date & Time</p>
+              <input type="datetime-local" value={form.matchDate} onChange={e => set('matchDate', e.target.value)}
+                className="w-full bg-slate-800/60 border border-slate-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-orange-500/50" />
             </div>
           </div>
 
@@ -425,7 +482,7 @@ function CreateMatchForm({ token, onCreated }: { token: string; onCreated: () =>
           <button onClick={save} disabled={!valid || saving}
             className={`w-full py-2.5 rounded-xl font-semibold text-sm transition-all
               ${valid && !saving ? 'bg-orange-500 text-white hover:bg-orange-600' : 'bg-slate-700 text-slate-500 cursor-not-allowed'}`}>
-            {saving ? '⏳ Creating…' : '🚀 Create Challenge'}
+            {saving ? '⏳ Creating…' : '🚀 Create Match'}
           </button>
         </div>
       )}
@@ -836,11 +893,11 @@ export default function AdminPage() {
 
           {loadingM && <div className="h-20 rounded-xl bg-slate-800/50 animate-pulse" />}
           {!loadingM && matches.map(m => (
-            <div key={m._id} className="card-glass p-5">
-              <div className="flex items-start justify-between gap-4 flex-wrap">
+            <div key={m._id} className="card-glass p-3 sm:p-5">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4">
                 <div className="flex-1 min-w-0">
                   <p className="text-white font-bold text-sm">{m.teams[0].shortName} vs {m.teams[1].shortName}</p>
-                  <p className="text-slate-400 text-xs mt-0.5">📍 {m.venue} · {m.format} · {new Date(m.date).toLocaleDateString('en-IN')}</p>
+                  <p className="text-slate-400 text-xs mt-0.5">📍 {m.venue} · {m.format} · {new Date(m.date).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })} · {new Date(m.date).toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit', hour12:true })}</p>
                   <div className="flex items-center gap-2 mt-1 flex-wrap">
                     <span className={`text-xs px-2 py-0.5 rounded-full capitalize font-medium
                       ${m.status === 'live' ? 'bg-green-500/20 text-green-400' : m.status === 'completed' ? 'bg-slate-700/50 text-slate-400' : 'bg-blue-500/20 text-blue-400'}`}>
@@ -864,8 +921,9 @@ export default function AdminPage() {
                     </div>
                   )}
                 </div>
-                <div className="flex flex-col items-end gap-2">
+                <div className="flex flex-wrap sm:flex-col items-start sm:items-end gap-2">
                   <ResultForm match={m} token={token} onSuccess={fetchMatches} />
+                  <EditMatchQuestions match={m} token={token} onSuccess={fetchMatches} />
                   <button onClick={() => deleteMatch(m._id)}
                     className="text-xs px-2 py-1 border border-red-500/30 text-red-400 rounded-lg hover:bg-red-500/10 transition-colors">
                     🗑️ Delete
@@ -902,6 +960,7 @@ export default function AdminPage() {
                   ${ch.status === 'open' ? 'bg-green-500/20 text-green-400' : ch.status === 'completed' ? 'bg-slate-700/50 text-slate-400' : 'bg-orange-500/20 text-orange-400'}`}>
                   {ch.status}
                 </span>
+                {ch.matchId && <EditMatchQuestions match={ch.matchId as any} token={token} onSuccess={fetchChallenges} />}
                 <Link to={`/challenge/${ch.challengeId}`}
                   className="text-xs px-2 py-1 border border-slate-700 text-slate-400 rounded-lg hover:border-slate-500 transition-colors">
                   View →
@@ -911,6 +970,7 @@ export default function AdminPage() {
                   🗑️
                 </button>
               </div>
+
             </div>
           ))}
         </div>

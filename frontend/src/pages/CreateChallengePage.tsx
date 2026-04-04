@@ -201,6 +201,25 @@ export default function CreateChallengePage() {
       <p className="text-slate-400 text-center text-sm mb-6">Lock your predictions and set the stakes</p>
 
       <StepBar current={step} />
+      
+      {/* ── Match Summary (Visible in steps 2 & 3) ── */}
+      {step > 1 && match && (
+        <div className="card-glass p-3 mb-6 flex items-center justify-between border-slate-700/50 bg-slate-800/30 animate-fade-in">
+          <div className="flex items-center gap-3">
+            <div className="flex -space-x-2">
+              <div className="w-8 h-8 rounded-full bg-slate-700 border border-slate-600 flex items-center justify-center text-xs">🏏</div>
+              <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-600 flex items-center justify-center text-xs">🏏</div>
+            </div>
+            <div>
+              <p className="text-white font-bold text-xs uppercase tracking-wider">{match.teams[0].shortName} vs {match.teams[1].shortName}</p>
+              <p className="text-slate-500 text-[10px]">{new Date(match.date).toLocaleDateString('en-IN', { day:'numeric', month:'short' })} · {match.format}</p>
+            </div>
+          </div>
+          <button onClick={() => setStep(1)} className="text-[10px] font-bold text-orange-400 hover:text-orange-300 uppercase tracking-widest px-2 py-1">
+            Change
+          </button>
+        </div>
+      )}
 
       {/* ══════════ STEP 1: Match Details ══════════ */}
       {step === 1 && (

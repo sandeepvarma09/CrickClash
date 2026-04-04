@@ -101,23 +101,23 @@ export default function HomePage() {
       </div>
 
       {/* ── Hero ── */}
-      <section className="max-w-4xl mx-auto px-4 pt-24 pb-16 text-center relative z-10">
+      <section className="max-w-4xl mx-auto px-4 pt-16 sm:pt-24 pb-12 sm:pb-16 text-center relative z-10">
         <div className="badge-brand text-sm mb-6 inline-flex">🏏 IPL 2026 is Live</div>
 
-        <h1 ref={titleRef} className="text-5xl md:text-7xl font-black mb-6 leading-tight opacity-0"
+        <h1 ref={titleRef} className="text-3xl sm:text-5xl md:text-7xl font-black mb-4 sm:mb-6 leading-tight opacity-0"
           style={{ fontFamily: 'var(--font-display)' }}>
           <span className="text-white">Predictions</span><br />
           <span className="text-gradient">Decide Pride</span>
         </h1>
 
-        <p ref={subtitleRef} className="text-lg md:text-xl text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed opacity-0">
+        <p ref={subtitleRef} className="text-base sm:text-lg md:text-xl text-slate-400 mb-6 sm:mb-10 max-w-2xl mx-auto leading-relaxed opacity-0 px-2">
           Challenge friends, lock predictions, and prove who really knows cricket.
           No money. No fantasy. Pure bragging rights. 🏆
         </p>
 
         <div ref={ctaRef} className="flex flex-col sm:flex-row gap-4 justify-center opacity-0">
-          <Link to="/matches" className="btn-primary text-lg px-8 py-4">⚡ Create a Challenge</Link>
-          <Link to="/leaderboard" className="btn-ghost text-lg px-8 py-4">🏅 View Leaderboard</Link>
+          <Link to="/matches" className="btn-primary text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4">⚡ Create a Challenge</Link>
+          <Link to="/leaderboard" className="btn-ghost text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4">🏅 View Leaderboard</Link>
         </div>
       </section>
 

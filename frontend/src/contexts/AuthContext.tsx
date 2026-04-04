@@ -27,7 +27,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const storedUser = localStorage.getItem('cricclash_user');
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch { /* corrupted data, ignore */ }
     }
     setLoading(false);
   }, []);
@@ -40,6 +42,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('cricclash_user', JSON.stringify(userData));
       localStorage.setItem('cricclash_username', userData.username);
       localStorage.setItem('cricclash_isAdmin', String(userData.isAdmin));
+      // Dispatch custom event so same-tab components (like CreateChallengePage) update
+      window.dispatchEvent(new Event('storage'));
+      // Reload the page so all components pick up the new auth state
+      setTimeout(() => window.location.reload(), 100);
     } catch (err: any) {
       const msg = err.response?.data?.message || err.message || 'Login failed';
       throw new Error(msg);
@@ -54,6 +60,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('cricclash_user', JSON.stringify(userData));
       localStorage.setItem('cricclash_username', userData.username);
       localStorage.setItem('cricclash_isAdmin', String(userData.isAdmin));
+      window.dispatchEvent(new Event('storage'));
+      // Reload the page so all components pick up the new auth state
+      setTimeout(() => window.location.reload(), 100);
     } catch (err: any) {
       const msg = err.response?.data?.message || err.message || 'Registration failed';
       throw new Error(msg);
@@ -65,8 +74,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem('cricclash_user');
     localStorage.removeItem('cricclash_username');
     localStorage.removeItem('cricclash_isAdmin');
-    window.location.href = '/';
+    // Full page reload on logout to clear all state
+    window.location.assign('/');
   };
+
 
   const resetPassword = async (email: string, newPassword: string) => {
     try {
