@@ -177,9 +177,10 @@ export default function VersusPage() {
     );
   }
 
-  // Pick the two participants to show (creator + joiner if available, else first two)
+  // Pick the two participants to show (ensure they are distinct)
   const p1 = participants[0];
-  const p2 = participants.find(p => p.userId?.username === joinerUsername) ?? participants[1];
+  const p2 = participants.find(p => p.userId?.username === joinerUsername && p.userId?.username !== p1?.userId?.username) 
+          ?? participants.find(p => p !== p1);
 
   const matchCompleted = challenge?.status === 'completed';
   const p1Wins = revealed && p1 && p2 && (p1.score ?? 0) > (p2.score ?? 0);
