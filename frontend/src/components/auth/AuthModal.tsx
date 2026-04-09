@@ -11,6 +11,7 @@ interface AuthModalProps {
 
 export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalProps) {
   const [view, setView] = useState<'login' | 'register' | 'forgot'>(initialMode);
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({ username: '', email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -122,15 +123,24 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
             <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500 ml-1">
               {view === 'forgot' ? 'New Password' : 'Password'}
             </label>
-            <input 
-              type="password" 
-              placeholder="••••••••"
-              required
-              minLength={6}
-              className="w-full bg-slate-900/50 border border-slate-800 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20 transition-all"
-              value={formData.password}
-              onChange={e => setFormData({ ...formData, password: e.target.value })}
-            />
+            <div className="relative">
+              <input 
+                type={showPassword ? "text" : "password"} 
+                placeholder="••••••••"
+                required
+                minLength={6}
+                className="w-full bg-slate-900/50 border border-slate-800 rounded-2xl pl-5 pr-12 py-4 text-white focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20 transition-all"
+                value={formData.password}
+                onChange={e => setFormData({ ...formData, password: e.target.value })}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 font-bold text-xs uppercase tracking-wider transition-colors"
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
           </div>
 
           {successMsg && (

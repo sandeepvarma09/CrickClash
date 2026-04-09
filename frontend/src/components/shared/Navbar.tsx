@@ -155,8 +155,8 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden border-t border-white/5 bg-slate-950/98 backdrop-blur-xl fixed inset-x-0 top-16 bottom-0 z-50 overflow-y-auto animate-in fade-in slide-in-from-top-4 duration-300">
-          <div className="px-5 py-6 space-y-6">
+        <div className="md:hidden absolute right-4 top-16 w-64 rounded-2xl border border-white/10 bg-slate-900/95 backdrop-blur-xl shadow-2xl shadow-black/50 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="px-4 py-4 space-y-4 max-h-[80vh] overflow-y-auto">
 
             {/* User Info Card (when logged in) */}
             {isAuthenticated && (
