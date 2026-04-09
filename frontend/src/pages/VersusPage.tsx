@@ -18,6 +18,7 @@ interface Participant {
   results?: {
     questionResults: boolean[]; totalCorrect: number;
   };
+  stake?: string;
 }
 interface Question { question: string; options: string[]; correctAnswer?: string }
 interface ChallengeInfo { challengeId: string; stake: string; status: string; matchId: { teams: [{name: string}, {name: string}]; status: string; questions?: Question[] } }
@@ -202,7 +203,15 @@ export default function VersusPage() {
           <span className="text-gradient">Head-to-Head</span>
         </h1>
         {challenge && (
-          <p className="text-slate-400 text-sm mt-2">Stakes: <span className="text-orange-400 font-semibold">"{challenge.stake}"</span></p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 mt-3">
+             <p className="text-slate-400 text-sm">@{p1?.userId?.username}'s Stake: <span className="text-orange-400 font-semibold">"{challenge.stake}"</span></p>
+             {p2 && (
+               <>
+                 <span className="hidden sm:inline text-slate-600">|</span>
+                 <p className="text-slate-400 text-sm">@{p2?.userId?.username}'s Stake: <span className="text-orange-400 font-semibold">"{p2.stake || challenge.stake}"</span></p>
+               </>
+             )}
+          </div>
         )}
       </div>
 

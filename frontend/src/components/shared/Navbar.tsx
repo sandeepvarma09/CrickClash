@@ -209,24 +209,6 @@ export default function Navbar() {
                     <span>My Profile</span>
                     <span className="ml-auto text-slate-600">›</span>
                   </Link>
-                  <Link to="/my-challenges" onClick={() => setMenuOpen(false)}
-                    className="flex items-center gap-3 px-5 py-3.5 rounded-2xl bg-white/5 border border-transparent text-slate-300 hover:text-white text-base font-bold active:scale-95 transition-all">
-                    <span>📋</span>
-                    <span>My Challenges</span>
-                    <span className="ml-auto text-slate-600">›</span>
-                  </Link>
-                  <Link to="/leaderboard" onClick={() => setMenuOpen(false)}
-                    className="flex items-center gap-3 px-5 py-3.5 rounded-2xl bg-white/5 border border-transparent text-slate-300 hover:text-white text-base font-bold active:scale-95 transition-all">
-                    <span>🏆</span>
-                    <span>Leaderboard</span>
-                    <span className="ml-auto text-slate-600">›</span>
-                  </Link>
-                  <Link to="/matches" onClick={() => setMenuOpen(false)}
-                    className="flex items-center gap-3 px-5 py-3.5 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-400 text-base font-bold active:scale-95 transition-all">
-                    <span>⚡</span>
-                    <span>Play Now</span>
-                    <span className="ml-auto">›</span>
-                  </Link>
                   <button
                     onClick={() => { logout(); setMenuOpen(false); }}
                     className="w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 text-base font-bold active:scale-95 transition-all mt-2">

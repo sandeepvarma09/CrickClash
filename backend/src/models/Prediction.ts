@@ -17,6 +17,7 @@ export interface IPrediction extends Document {
   score:        number;           // computed after match: 0–5
   submittedAt:  Date;
   isEvaluated:  boolean;
+  stake?:       string;
   results?:     IPredictionResults;
   createdAt:    Date;
   updatedAt:    Date;
@@ -58,6 +59,7 @@ const predictionSchema = new Schema<IPrediction>(
     score:       { type: Number, default: 0, min: 0, max: 5 },
     submittedAt: { type: Date,   default: Date.now },
     isEvaluated: { type: Boolean, default: false },
+    stake:       { type: String, trim: true, default: '' },
     results:     { type: resultsSchema, default: null },
   },
   {

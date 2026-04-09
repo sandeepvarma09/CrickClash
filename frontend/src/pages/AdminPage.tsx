@@ -42,41 +42,41 @@ interface ChallengeRow {
 const FORMATS = ['IPL', 'T20', 'ODI', 'TEST'];
 
 const STAKE_PRESETS = [
-  { label: '🍗 Buy biryani',         value: 'Buy biryani for everyone' },
-  { label: '👕 Wear jersey',         value: "Wear opponent's jersey for a day" },
-  { label: '📸 Instagram story',     value: 'Post a loser Instagram story' },
-  { label: '☕ Pay for chai',        value: "Pay for the whole group's chai" },
+  { label: '🍗 Buy biryani', value: 'Buy biryani for everyone' },
+  { label: '👕 Wear jersey', value: "Wear opponent's jersey for a day" },
+  { label: '📸 Instagram story', value: 'Post a loser Instagram story' },
+  { label: '☕ Pay for chai', value: "Pay for the whole group's chai" },
   { label: '🚗 Drive everyone home', value: 'Drive everyone home after the match' },
-  { label: '😤 Bragging rights',     value: 'Bragging rights 😤' },
+  { label: '😤 Bragging rights', value: 'Bragging rights 😤' },
 ];
 
 const TEAMS = [
-  { name: 'Mumbai Indians',              short: 'MI'   },
-  { name: 'Chennai Super Kings',         short: 'CSK'  },
-  { name: 'Royal Challengers Bengaluru', short: 'RCB'  },
-  { name: 'Kolkata Knight Riders',       short: 'KKR'  },
-  { name: 'Delhi Capitals',              short: 'DC'   },
-  { name: 'Rajasthan Royals',            short: 'RR'   },
-  { name: 'Sunrisers Hyderabad',         short: 'SRH'  },
-  { name: 'Punjab Kings',                short: 'PBKS' },
-  { name: 'Gujarat Titans',              short: 'GT'   },
-  { name: 'Lucknow Super Giants',        short: 'LSG'  },
-  { name: 'India',                        short: 'IND'  },
-  { name: 'Australia',                    short: 'AUS'  },
-  { name: 'England',                      short: 'ENG'  },
-  { name: 'Pakistan',                     short: 'PAK'  },
-  { name: 'New Zealand',                  short: 'NZ'   },
-  { name: 'South Africa',                 short: 'SA'   },
-  { name: 'West Indies',                  short: 'WI'   },
-  { name: 'Sri Lanka',                    short: 'SL'   },
+  { name: 'Mumbai Indians', short: 'MI' },
+  { name: 'Chennai Super Kings', short: 'CSK' },
+  { name: 'Royal Challengers Bengaluru', short: 'RCB' },
+  { name: 'Kolkata Knight Riders', short: 'KKR' },
+  { name: 'Delhi Capitals', short: 'DC' },
+  { name: 'Rajasthan Royals', short: 'RR' },
+  { name: 'Sunrisers Hyderabad', short: 'SRH' },
+  { name: 'Punjab Kings', short: 'PBKS' },
+  { name: 'Gujarat Titans', short: 'GT' },
+  { name: 'Lucknow Super Giants', short: 'LSG' },
+  { name: 'India', short: 'IND' },
+  { name: 'Australia', short: 'AUS' },
+  { name: 'England', short: 'ENG' },
+  { name: 'Pakistan', short: 'PAK' },
+  { name: 'New Zealand', short: 'NZ' },
+  { name: 'South Africa', short: 'SA' },
+  { name: 'West Indies', short: 'WI' },
+  { name: 'Sri Lanka', short: 'SL' },
 ];
 
 // ─── Default questions that auto-fill from teams ───────────────────────────────
 function defaultQuestions(t1: string, t2: string): Question[] {
   return [
-    { question: 'Who will win the toss?',   options: [t1, t2] },
-    { question: 'Who will win the match?',  options: [t1, t2] },
-    { question: 'Who will be the top run scorer?',  options: [] },
+    { question: 'Who will win the toss?', options: [t1, t2] },
+    { question: 'Who will win the match?', options: [t1, t2] },
+    { question: 'Who will be the top run scorer?', options: [] },
     { question: 'Who will be the Player of the Match?', options: [] },
   ];
 }
@@ -87,9 +87,9 @@ function adminHeaders(token: string) {
 
 // ─── Result Form (dynamic — uses match's own questions) ─────────────────────────
 function ResultForm({ match, token, onSuccess }: { match: MatchRow; token: string; onSuccess: () => void }) {
-  const [open, setOpen]     = useState(false);
+  const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [error, setError]   = useState('');
+  const [error, setError] = useState('');
 
   const t1 = match.teams[0].name, t2 = match.teams[1].name;
 
@@ -97,13 +97,13 @@ function ResultForm({ match, token, onSuccess }: { match: MatchRow; token: strin
   const questions = match.questions?.length
     ? match.questions
     : [
-        { question: 'Who will win the toss?',               options: [t1, t2] },
-        { question: 'Who will win the match?',              options: [t1, t2] },
-        { question: 'Who will be the top run scorer?',      options: [] },
-        { question: 'Who will be the Player of the Match?', options: [] },
-      ];
+      { question: 'Who will win the toss?', options: [t1, t2] },
+      { question: 'Who will win the match?', options: [t1, t2] },
+      { question: 'Who will be the top run scorer?', options: [] },
+      { question: 'Who will be the Player of the Match?', options: [] },
+    ];
 
-  const [answers,  setAnswers]  = useState<string[]>(Array(questions.length).fill(''));
+  const [answers, setAnswers] = useState<string[]>(Array(questions.length).fill(''));
   const [freeText, setFreeText] = useState<string[]>(Array(questions.length).fill(''));
 
   const getAnswer = (qi: number) =>
@@ -123,11 +123,11 @@ function ResultForm({ match, token, onSuccess }: { match: MatchRow; token: strin
       const a2 = getAnswer(2) || 'TBD';
       const a3 = getAnswer(3) || 'TBD';
       await adminAxios.put(`${API}/api/admin/matches/${match._id}/result`, {
-        tossWinner:        a0,
-        matchWinner:       a1,
-        topRunScorer:      a2,
+        tossWinner: a0,
+        matchWinner: a1,
+        topRunScorer: a2,
         totalRunsByWinner: 0,
-        playerOfTheMatch:  a3,
+        playerOfTheMatch: a3,
         // Also store correctAnswers back on the questions for display
         questionAnswers: questions.map((_, i) => getAnswer(i)),
       }, { headers: adminHeaders(token) });
@@ -276,9 +276,9 @@ function QuestionBuilder({ questions, onChange }: { questions: Question[]; onCha
 
 // ─── Edit Match Questions (inline) ────────────────────────────────────────────
 function EditMatchQuestions({ match, token, onSuccess }: { match: MatchRow; token: string; onSuccess: () => void }) {
-  const [editing, setEditing]   = useState(false);
-  const [saving, setSaving]     = useState(false);
-  const [error, setError]       = useState('');
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
   const t1 = match.teams[0].name, t2 = match.teams[1].name;
   const [questions, setQuestions] = useState<Question[]>(
     match.questions?.length ? [...match.questions] : defaultQuestions(t1, t2)
@@ -329,16 +329,16 @@ function EditMatchQuestions({ match, token, onSuccess }: { match: MatchRow; toke
 
 // ─── Create Match Form ────────────────────────────────────────────────────────
 function CreateMatchForm({ token, onCreated }: { token: string; onCreated: () => void }) {
-  const [open, setOpen]       = useState(false);
-  const [saving, setSaving]   = useState(false);
+  const [open, setOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [seeding, setSeeding] = useState(false);
-  const [error, setError]     = useState('');
+  const [error, setError] = useState('');
   // Default date: 7 days from now at 19:30
   const defaultDateStr = (() => {
     const d = new Date(); d.setDate(d.getDate() + 7); d.setHours(19, 30, 0, 0);
     return d.toISOString().slice(0, 16); // for datetime-local input
   })();
-  const [form, setForm]       = useState({
+  const [form, setForm] = useState({
     team1Name: '', team1Short: '', team2Name: '', team2Short: '',
     venue: '', format: 'IPL', matchDate: defaultDateStr,
   });
@@ -412,7 +412,7 @@ function CreateMatchForm({ token, onCreated }: { token: string; onCreated: () =>
           {/* Teams */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {([1, 2] as const).map(slot => {
-              const nameKey  = slot === 1 ? 'team1Name'  : 'team2Name';
+              const nameKey = slot === 1 ? 'team1Name' : 'team2Name';
               const shortKey = slot === 1 ? 'team1Short' : 'team2Short';
               return (
                 <div key={slot}>
@@ -492,17 +492,17 @@ function CreateMatchForm({ token, onCreated }: { token: string; onCreated: () =>
 
 // ─── Create Challenge Tab ────────────────────────────────────────────────────
 function CreateChallengeTab({ token, matches }: { token: string; matches: MatchRow[] }) {
-  const [step, setStep]               = useState<1 | 2 | 3>(1);
-  const [selectedMatch, setSelected]  = useState<MatchRow | null>(null);
-  const [creator, setCreator]         = useState('admin');
-  const [stake, setStake]             = useState('');
+  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [selectedMatch, setSelected] = useState<MatchRow | null>(null);
+  const [creator, setCreator] = useState('admin');
+  const [stake, setStake] = useState('');
   const [customStake, setCustomStake] = useState('');
-  const [saving, setSaving]           = useState(false);
-  const [error, setError]             = useState('');
-  const [created, setCreated]         = useState<{ challengeId: string } | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const [created, setCreated] = useState<{ challengeId: string } | null>(null);
   // answers indexed by question index
-  const [answers, setAnswers]         = useState<string[]>(['', '', '', '']);
-  const [freeText, setFreeText]       = useState<string[]>(['', '', '', '']);
+  const [answers, setAnswers] = useState<string[]>(['', '', '', '']);
+  const [freeText, setFreeText] = useState<string[]>(['', '', '', '']);
 
   const finalStake = stake === 'custom' ? customStake : stake;
   const t1 = selectedMatch?.teams[0].name ?? '';
@@ -538,15 +538,15 @@ function CreateChallengeTab({ token, matches }: { token: string; matches: MatchR
       const a3 = getAnswer(3, q[3]) ?? '';
 
       const r = await adminAxios.post(`${API}/api/challenges`, {
-        matchId:  selectedMatch._id,
+        matchId: selectedMatch._id,
         username: creator.trim().toLowerCase(),
-        stake:    finalStake.trim(),
+        stake: finalStake.trim(),
         predictions: {
-          tossWinner:        a0,
-          matchWinner:       a1,
-          topRunScorer:      a2,
+          tossWinner: a0,
+          matchWinner: a1,
+          topRunScorer: a2,
           totalRunsByWinner: 0,
-          playerOfTheMatch:  a3,
+          playerOfTheMatch: a3,
         },
       }, { headers: adminHeaders(token) });
       setCreated({ challengeId: r.data.data?.challengeId });
@@ -563,7 +563,7 @@ function CreateChallengeTab({ token, matches }: { token: string; matches: MatchR
   // ── Success screen ──
   if (created) {
     const url = `${APP}/challenge/${created.challengeId}`;
-    const wa  = `https://wa.me/?text=${encodeURIComponent(`🏏 Cricket Prediction Challenge!\n\n${url}\n\nStake: ${finalStake}`)}`;
+    const wa = `https://wa.me/?text=${encodeURIComponent(`🏏 Cricket Prediction Challenge!\n\n${url}\n\nStake: ${finalStake}`)}`;
     return (
       <div className="max-w-lg mx-auto card-glass p-8 text-center space-y-5">
         <div className="text-5xl">🎉</div>
@@ -739,9 +739,9 @@ function CreateChallengeTab({ token, matches }: { token: string; matches: MatchR
 
 // ─── Admin Login ──────────────────────────────────────────────────────────────
 function AdminLogin({ onLogin }: { onLogin: (token: string) => void }) {
-  const [creds, setCreds]     = useState({ username: 'admin', password: 'admin123' });
+  const [creds, setCreds] = useState({ username: 'admin', password: 'admin123' });
   const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState('');
+  const [error, setError] = useState('');
 
   const login = async () => {
     setLoading(true); setError('');
@@ -780,9 +780,9 @@ function AdminLogin({ onLogin }: { onLogin: (token: string) => void }) {
 type Tab = 'create' | 'matches' | 'challenges';
 
 export default function AdminPage() {
-  const [token, setToken]           = useState(localStorage.getItem('adminToken') ?? '');
-  const [activeTab, setActiveTab]   = useState<Tab>('create');
-  
+  const [token, setToken] = useState(localStorage.getItem('adminToken') ?? '');
+  const [activeTab, setActiveTab] = useState<Tab>('create');
+
   // Hard route protection
   const isGlobalAdmin = localStorage.getItem('cricclash_isAdmin') === 'true';
   if (!isGlobalAdmin) {
@@ -795,10 +795,10 @@ export default function AdminPage() {
     );
   }
 
-  const [matches, setMatches]       = useState<MatchRow[]>([]);
+  const [matches, setMatches] = useState<MatchRow[]>([]);
   const [challenges, setChallenges] = useState<ChallengeRow[]>([]);
-  const [loadingM, setLoadingM]     = useState(false);
-  const [loadingC, setLoadingC]     = useState(false);
+  const [loadingM, setLoadingM] = useState(false);
+  const [loadingC, setLoadingC] = useState(false);
 
   const fetchMatches = () => {
     setLoadingM(true);
@@ -845,9 +845,9 @@ export default function AdminPage() {
   if (!token) return <AdminLogin onLogin={t => setToken(t)} />;
 
   const TABS: { id: Tab; label: string }[] = [
-    { id: 'create',     label: '⚡ Create Challenge' },
-    { id: 'matches',    label: '🏏 Matches'           },
-    { id: 'challenges', label: '⚔️ All Challenges'    },
+    { id: 'create', label: '⚡ Create Challenge' },
+    { id: 'matches', label: '🏏 Matches' },
+    { id: 'challenges', label: '⚔️ All Challenges' },
   ];
 
   return (
@@ -897,7 +897,7 @@ export default function AdminPage() {
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4">
                 <div className="flex-1 min-w-0">
                   <p className="text-white font-bold text-sm">{m.teams[0].shortName} vs {m.teams[1].shortName}</p>
-                  <p className="text-slate-400 text-xs mt-0.5">📍 {m.venue} · {m.format} · {new Date(m.date).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })} · {new Date(m.date).toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit', hour12:true })}</p>
+                  <p className="text-slate-400 text-xs mt-0.5">📍 {m.venue} · {m.format} · {new Date(m.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} · {new Date(m.date).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })}</p>
                   <div className="flex items-center gap-2 mt-1 flex-wrap">
                     <span className={`text-xs px-2 py-0.5 rounded-full capitalize font-medium
                       ${m.status === 'live' ? 'bg-green-500/20 text-green-400' : m.status === 'completed' ? 'bg-slate-700/50 text-slate-400' : 'bg-blue-500/20 text-blue-400'}`}>
@@ -914,7 +914,7 @@ export default function AdminPage() {
                     <div className="mt-2 space-y-0.5">
                       {m.questions.map((q, i) => (
                         <p key={i} className="text-xs text-slate-500">
-                          <span className="text-orange-400/70">Q{i+1}.</span> {q.question}
+                          <span className="text-orange-400/70">Q{i + 1}.</span> {q.question}
                           {q.options.length > 0 && <span className="text-slate-600"> ({q.options.join(' / ')})</span>}
                         </p>
                       ))}

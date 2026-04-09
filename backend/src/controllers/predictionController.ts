@@ -19,7 +19,7 @@ async function ensureUser(username: string) {
  *          topRunScorer, totalRunsByWinner, playerOfTheMatch } }
  */
 export const submitPrediction = asyncHandler(async (req: Request, res: Response) => {
-  const { challengeId: shortId, username, predictions } = req.body;
+  const { challengeId: shortId, username, stake, predictions } = req.body;
 
   if (!shortId)    throw new AppError('challengeId is required', 400);
   if (!username)   throw new AppError('username is required', 400);
@@ -53,6 +53,7 @@ export const submitPrediction = asyncHandler(async (req: Request, res: Response)
   const prediction = await Prediction.create({
     challengeId: challenge._id,
     userId:      user._id,
+    stake:       stake?.trim() || '',
     answers: {
       questionAnswers,
     },
