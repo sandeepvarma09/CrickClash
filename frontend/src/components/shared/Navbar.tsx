@@ -96,38 +96,43 @@ export default function Navbar() {
 
               {/* Desktop Dropdown Menu */}
               {profileMenuOpen && (
-                <div className="absolute right-4 top-14 w-56 rounded-2xl border border-white/10 bg-slate-900/95 backdrop-blur-xl shadow-2xl shadow-black/50 overflow-hidden z-[100] animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute right-0 sm:right-4 top-14 w-60 rounded-2xl border border-orange-500/20 bg-slate-900/95 backdrop-blur-2xl shadow-2xl shadow-orange-500/10 overflow-hidden z-[100] animate-in fade-in slide-in-from-top-2 duration-200 origin-top-right">
                   {/* User info header */}
-                  <div className="px-4 py-3 border-b border-white/5 bg-slate-800/40">
-                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Signed in as</p>
+                  <div className="px-5 py-4 border-b border-white/5 bg-gradient-to-br from-slate-800/80 to-slate-900/80">
+                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-0.5">Signed in as</p>
                     <p className="text-white font-black text-sm truncate">@{username}</p>
                   </div>
                   {/* Menu items */}
-                  <div className="p-2 space-y-0.5">
+                  <div className="p-2 space-y-1">
                     <Link to={`/profile/${username}`}
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 text-sm font-semibold transition-all active:scale-95">
-                      <span>👤</span><span>My Profile</span>
+                      className="group flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-orange-400 hover:bg-orange-500/10 text-sm font-semibold transition-all active:scale-[0.98]">
+                      <span className="opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-transform">👤</span>
+                      <span className="group-hover:translate-x-1 transition-transform">My Profile</span>
                     </Link>
                     <Link to="/my-challenges"
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 text-sm font-semibold transition-all active:scale-95">
-                      <span>📋</span><span>My Challenges</span>
+                      className="group flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-orange-400 hover:bg-orange-500/10 text-sm font-semibold transition-all active:scale-[0.98]">
+                      <span className="opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-transform">📋</span>
+                      <span className="group-hover:translate-x-1 transition-transform">My Challenges</span>
                     </Link>
                     <Link to="/leaderboard"
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 text-sm font-semibold transition-all active:scale-95">
-                      <span>🏆</span><span>Leaderboard</span>
+                      className="group flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-orange-400 hover:bg-orange-500/10 text-sm font-semibold transition-all active:scale-[0.98]">
+                      <span className="opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-transform">🏆</span>
+                      <span className="group-hover:translate-x-1 transition-transform">Leaderboard</span>
                     </Link>
                     {isAdmin && (
                       <Link to="/admin"
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 text-sm font-semibold transition-all active:scale-95">
-                        <span>⚙️</span><span>Admin Panel</span>
+                        className="group flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-orange-400 hover:bg-orange-500/10 text-sm font-semibold transition-all active:scale-[0.98]">
+                        <span className="opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-transform">⚙️</span>
+                        <span className="group-hover:translate-x-1 transition-transform">Admin Panel</span>
                       </Link>
                     )}
                   </div>
-                  <div className="p-2 border-t border-white/5">
+                  <div className="p-2 border-t border-white/5 bg-slate-900/50">
                     <button
                       onClick={() => { logout(); setProfileMenuOpen(false); }}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 text-sm font-bold transition-all active:scale-95">
-                      <span>🚪</span><span>Logout</span>
+                      className="group w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-red-500/5 border border-transparent hover:border-red-500/20 hover:bg-red-500/10 text-red-400 text-sm font-bold transition-all active:scale-[0.98]">
+                      <span className="opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-transform">🚪</span>
+                      <span className="group-hover:translate-x-1 transition-transform">Logout</span>
                     </button>
                   </div>
                 </div>

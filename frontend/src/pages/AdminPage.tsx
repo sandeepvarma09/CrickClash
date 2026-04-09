@@ -137,15 +137,13 @@ function ResultForm({ match, token, onSuccess }: { match: MatchRow; token: strin
     } finally { setSaving(false); }
   };
 
-  if (match.status === 'completed')
-    return <span className="text-xs px-3 py-1.5 rounded-lg border border-green-500/30 text-green-400">✅ Completed</span>;
-
   return (
     <div>
       {!open && (
         <button onClick={() => setOpen(true)}
-          className="text-xs px-3 py-1.5 rounded-lg border border-orange-500/30 text-orange-400 hover:bg-orange-500/10 transition-colors">
-          Set Result
+          className={`text-xs px-3 py-1.5 rounded-lg border transition-colors
+            ${match.status === 'completed' ? 'border-green-500/30 text-green-400 hover:bg-green-500/10' : 'border-orange-500/30 text-orange-400 hover:bg-orange-500/10'}`}>
+          {match.status === 'completed' ? '✏️ Edit Result' : 'Set Result'}
         </button>
       )}
       {open && (
